@@ -1,0 +1,2661 @@
+<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#2563eb"><title>Aprobační trenažér</title><link rel="manifest" href="manifest.webmanifest?v=4"><link rel="apple-touch-icon" href="icon-192.png"><style>
+:root{--bg:#f3f5fb;--panel:#fff;--text:#17203a;--muted:#6d7488;--line:#e1e5ef;--accent:#2949c7;--ok:#17864d;--bad:#c94444}
+@media(prefers-color-scheme:dark){:root{--bg:#111522;--panel:#1a2030;--text:#eef1fb;--muted:#a7afc2;--line:#30384d;--accent:#7890ff}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body.light{--bg:#f3f5fb;--panel:#fff;--text:#17203a;--muted:#6d7488;--line:#e1e5ef;--accent:#2949c7}
+body.dark{--bg:#111522;--panel:#1a2030;--text:#eef1fb;--muted:#a7afc2;--line:#30384d;--accent:#7890ff}
+.app{max-width:780px;margin:auto;padding:20px 14px 45px}header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}h1{margin:0;font-size:25px}.eyebrow{font-size:11px;font-weight:800;letter-spacing:.15em;color:var(--accent)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 10px 35px rgba(20,30,60,.07)}.hero{display:flex;justify-content:space-between;align-items:center;padding:14px;border-radius:15px;background:color-mix(in srgb,var(--accent) 10%,var(--panel));margin-bottom:16px}.hero b{font-size:22px}.hero span,.statsline,.source{color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}label{font-weight:700;display:block;margin:12px 0 6px}select{width:100%;margin-top:6px;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--text);font:inherit}
+.mode{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:18px 0}.modebtn{border:1px solid var(--line);border-radius:13px;padding:11px 7px;background:var(--panel);color:var(--text);font-weight:800}.modebtn small{display:block;color:var(--muted);font-weight:500;margin-top:3px}.modebtn.active{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+button{font:inherit;cursor:pointer}.primary,.secondary{border:0;border-radius:13px;padding:13px 17px;font-weight:800}.primary{background:var(--accent);color:#fff}.secondary{background:color-mix(in srgb,var(--accent) 12%,var(--panel));color:var(--text)}#startBtn{width:100%;font-size:18px}.statsline{display:flex;justify-content:space-between;margin-top:15px}.iconbtn{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:12px;padding:9px 12px}
+.hidden{display:none!important}.quiztop{display:flex;justify-content:space-between;font-weight:800}.progress{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin:10px 0 16px}.progress i{display:block;height:100%;width:0;background:var(--accent)}.tag{display:inline-block;background:color-mix(in srgb,var(--accent) 12%,var(--panel));color:var(--accent);font-size:12px;font-weight:800;padding:6px 9px;border-radius:99px}.questionbox h2{font-size:21px;margin:14px 0 18px}
+.options{display:grid;gap:10px}.option{text-align:left;border:1px solid var(--line);background:var(--panel);color:var(--text);padding:14px;border-radius:13px}.option.correct{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--panel))}.option.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 11%,var(--panel))}.feedback{font-weight:800;min-height:26px;margin-top:12px}.ok{color:var(--ok)}.bad{color:var(--bad)}.source{margin-top:8px}.actions{display:flex;justify-content:space-between;gap:10px;margin-top:18px}.actions button{flex:1}.grade{text-align:center;font-size:46px;font-weight:900;color:var(--accent);margin:8px}.resultgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.resultgrid div{text-align:center;background:color-mix(in srgb,var(--accent) 8%,var(--panel));padding:12px;border-radius:13px}.resultgrid b{display:block;font-size:22px}.resultgrid span{font-size:12px;color:var(--muted)}.reviewitem{border-top:1px solid var(--line);padding:12px 0}.reviewitem:first-child{border-top:0}
+@media(max-width:520px){.grid{grid-template-columns:1fr}.mode{grid-template-columns:1fr}.modebtn{text-align:left}.statsline{gap:10px;flex-direction:column}.questionbox h2{font-size:19px}}
+</style></head><body><main class="app">
+<section id="home" class="card"><div class="top"><div><div class="eyebrow">MEDICÍNA • VERZE 4 • 202 OTÁZEK</div><h1>Aprobační trenažér</h1></div><button id="themeBtn" class="iconbtn" aria-label="Téma">◐</button></div><p class="muted">Otázky a správné odpovědi jsou převzaty přesně z dodaného souboru.</p><div class="stats"><div><b id="best">—</b><span>Nejlepší výsledek</span></div><div><b id="saved">0</b><span>Uložené chyby</span></div></div><div class="seg"><button class="modebtn active" data-mode="learn">Trénink</button><button class="modebtn" data-mode="exam">Zkouška</button><button class="modebtn" data-mode="mistakes">Jen chyby</button></div><label>Počet otázek<select id="count"><option>10</option><option>20</option><option selected>50</option><option>100</option><option>202</option></select></label><label>Časový limit<select id="time"><option value="0" selected>Bez limitu</option><option value="15">15 minut</option><option value="30">30 minut</option><option value="60">60 minut</option></select></label><button id="startBtn" class="primary">Začít</button></section>
+<section id="quiz" class="card hidden"><div class="quizhead"><span id="counter"></span><b id="timer"></b></div><div class="progress"><i id="bar"></i></div><h2 id="question"></h2><div id="options" class="options"></div><div id="feedback" class="feedback"></div><div id="source" class="source hidden"></div><div class="actions"><button id="quitBtn" class="secondary">Ukončit</button><button id="nextBtn" class="primary" disabled>Další</button></div></section>
+<section id="result" class="card hidden"><div class="eyebrow">VÝSLEDEK</div><h1 id="grade"></h1><div class="resultgrid"><div><b id="score"></b><span>Správně</span></div><div><b id="percent"></b><span>Úspěšnost</span></div><div><b id="wrong"></b><span>Chyby</span></div></div><div id="review"></div><div class="actions"><button id="againBtn" class="secondary">Domů</button><button id="retryBtn" class="primary">Opakovat chyby</button></div></section>
+</main><script>window.QUESTION_BANK = [
+  {
+    "id": 1,
+    "question": "Anizokorie",
+    "answer": "různá velikost zornic.",
+    "source": "Anizokorie – různá velikost zornic.",
+    "category": "Oční",
+    "options": [
+      "různá velikost zornic.",
+      "stejná velikost zornic",
+      "rozšíření velikost zornic",
+      "zůžené zornice"
+    ]
+  },
+  {
+    "id": 2,
+    "question": "Astma bronchiale je charakterizováno jako",
+    "answer": "chronické zánětlivé onemocnění dýchacích cest s bronchíalní obstrukcí.",
+    "source": "Astma bronchiale je charakterizováno jako chronické zánětlivé onemocnění dýchacích cest s bronchíalní obstrukcí.",
+    "category": "Dýchání",
+    "options": [
+      "chronické zánětlivé onemocnění dýchacích cest s bronchíalní obstrukcí.",
+      "různé dechové vlny se nepravidelně střidaji s apnoickými pauzamy meningitidy, encefalitidy.",
+      "akutní onemocnění charakterizované zánetlivymi změnami v plicní tkání",
+      "nedýcha."
+    ]
+  },
+  {
+    "id": 3,
+    "question": "Acídoza",
+    "answer": "porucha acidobazické rovnováhy ve procpěch kyselin, t.j jejich zvýšená tvorba či snížené vylučování zadržení, popř. Zvýšené ztráty látek zasaditých",
+    "source": "Acídoza - porucha acidobazické rovnováhy ve procpěch kyselin, t.j jejich zvýšená tvorba či snížené vylučování zadržení, popř. Zvýšené ztráty látek zasaditých",
+    "category": "Ostatní",
+    "options": [
+      "porucha acidobazické rovnováhy ve procpěch kyselin, t.j jejich zvýšená tvorba či snížené vylučování zadržení, popř. Zvýšené ztráty látek zasaditých",
+      "pod uhlem 90°, do kožní řasy která se drží po celou dobu aplikace, střídat místa vpichu v oblasti břicha ve směru hodinových ručiček, místo vpichu nemasírovat",
+      "4x denně, 2x po týdnu, nebo 3x denně.",
+      "léčivá látka, její směs nebo léčivý přípravek, který se použivá k aplikaci"
+    ]
+  },
+  {
+    "id": 4,
+    "question": "Anurie",
+    "answer": "meně než 100 ml za 24 hodiny.",
+    "source": "Anurie – meně než 100 ml za 24 hodiny.",
+    "category": "Urologie",
+    "options": [
+      "meně než 100 ml za 24 hodiny.",
+      "samovolné odkapavání moče.",
+      "zadržení moči v močovem měchýře při nemožnosti močení.",
+      "částe močení, větší množství moče (2-3 l a vice)."
+    ]
+  },
+  {
+    "id": 5,
+    "question": "Automatizovaný externí difibrilátor (AED) je určen pro",
+    "answer": "širokou veřejnost, která by za jeho pomoci měla být schopná poskytnout efektivnější kardiopulmonální resuscitaci (KPR)",
+    "source": "Automatizovaný externí difibrilátor (AED) je určen pro širokou veřejnost, která by za jeho pomoci měla být schopná poskytnout efektivnější kardiopulmonální resuscitaci (KPR)",
+    "category": "Kardiologie a KPR",
+    "options": [
+      "širokou veřejnost, která by za jeho pomoci měla být schopná poskytnout efektivnější kardiopulmonální resuscitaci (KPR)",
+      "dušnost, cyanóza, hypo a hyperventiláce, bolest na hrudi, dušnost může být namáhava.",
+      "střidaní horečky a normální teploty.",
+      "anamneza, fizikální výšetření, EKG, ECHO, RTG hrudniku, laboratoř, u pravostranního selháni angio-scyntigrafie."
+    ]
+  },
+  {
+    "id": 6,
+    "question": "Antitrendelenburgova poloha je",
+    "answer": "poloha s hlavou a hrudníkem výše, než dolní končetiny, ktera se využíva u nemocných s poruchamí dolních končetin",
+    "source": "Antitrendelenburgova poloha je poloha s hlavou a hrudníkem výše, než dolní končetiny, ktera se využíva u nemocných s poruchamí dolních končetin",
+    "category": "Polohy",
+    "options": [
+      "poloha s hlavou a hrudníkem výše, než dolní končetiny, ktera se využíva u nemocných s poruchamí dolních končetin",
+      "jedna DK je pokrčená, druha natažená. Při popaleninách, traumach, pleuritidě.",
+      "poloha s hlavou a hrudníkem niže než dolní končetiny, která se využivá u nemocných při stratách krve nebo po operacích na male pánví.",
+      "nemocný sedí ze spuštěnymi DK které jsou opřeny, HK se opirá o stolek nebo o lůžko"
+    ]
+  },
+  {
+    "id": 7,
+    "question": "Alkaloza znamená",
+    "answer": "poruchu acidobazické rovnováhy, při které stoupa pH nad fyziologickou mez",
+    "source": "Alkaloza znamená poruchu acidobazické rovnováhy, při které stoupa pH nad fyziologickou mez",
+    "category": "Ostatní",
+    "options": [
+      "poruchu acidobazické rovnováhy, při které stoupa pH nad fyziologickou mez",
+      "4x denně, 2x po týdnu, nebo 3x denně.",
+      "popírání a izolace, hněv/zlost, smlouváni, depresse, akceptace (smíření)",
+      "zanětlivé onemocnění cev, okrajových časti končetin."
+    ]
+  },
+  {
+    "id": 8,
+    "question": "Anamnéza zahrnuje",
+    "answer": "všechny údaje o zdravotním stavu pacienta od narození do současnosti",
+    "source": "Anamnéza zahrnuje všechny údaje o zdravotním stavu pacienta od narození do současnosti",
+    "category": "Ošetřovatelství",
+    "options": [
+      "všechny údaje o zdravotním stavu pacienta od narození do současnosti",
+      "komunikace pomoci slov prostřednictvim jazyka.",
+      "redukční, pro hubnutí.",
+      "pacient je v neustálé lékařské péči. Pozorování je u lékaře při pravidelných kontrolách"
+    ]
+  },
+  {
+    "id": 9,
+    "question": "Anafilaktický šok je",
+    "answer": "akutní alergický stav, který provází bronchospasmus, pokles krevního tlaku, oběhové selhání a distribuční šok.",
+    "source": "Anafilaktický šok je akutní alergický stav, který provází bronchospasmus, pokles krevního tlaku, oběhové selhání a distribuční šok.",
+    "category": "Dýchání",
+    "options": [
+      "akutní alergický stav, který provází bronchospasmus, pokles krevního tlaku, oběhové selhání a distribuční šok.",
+      "hypotenze, tachykardie, bledá a zpocené kůže, rychlé dýchání, úzkost oběti.",
+      "hemoragický.",
+      "svědivá výražka, otok v krku, nizký krevní tlak, kopřivka, zvrácení."
+    ]
+  },
+  {
+    "id": 10,
+    "question": "Akné",
+    "answer": "kožní onemocnění, zánět mazových žlaz.",
+    "source": "Akné - kožní onemocnění, zánět mazových žlaz.",
+    "category": "Ostatní",
+    "options": [
+      "kožní onemocnění, zánět mazových žlaz.",
+      "syndrom týraného, zneužívaného a zanedbávaného dítěte",
+      "prodloužená mícha.",
+      "k obnovení životních funkcí"
+    ]
+  },
+  {
+    "id": 11,
+    "question": "Anemie",
+    "answer": "onemocnění krve, konkretně červených krvinek.",
+    "source": "Anemie - onemocnění krve, konkretně červených krvinek.",
+    "category": "Krev a šok",
+    "options": [
+      "onemocnění krve, konkretně červených krvinek.",
+      "nedostatek železa v krve.",
+      "krvácení, purpura, ekchimozy nebo hematomy, uvětšená a bolestivá jatra a slezina, bolest hlavy, hypotenze a tachykardie.",
+      "rozpad červených krvinek."
+    ]
+  },
+  {
+    "id": 12,
+    "question": "AIDS",
+    "answer": "syndrom ziskáneho selhání imunity- je soubor přiznaku a infekci, který je nasledkem poškození imunitního systemu člověka virem HIV.",
+    "source": "AIDS – syndrom ziskáneho selhání imunity- je soubor přiznaku a infekci, který je nasledkem poškození imunitního systemu člověka virem HIV.",
+    "category": "Infekce",
+    "options": [
+      "syndrom ziskáneho selhání imunity- je soubor přiznaku a infekci, který je nasledkem poškození imunitního systemu člověka virem HIV.",
+      "v příme souvislosti s pobytem ve zdravotnickém zařízení",
+      "proces který zabezpečuje umrcení všech životoschopních mikroorganizmů včetně spor.",
+      "akutní průjmová bakteriální nemoc způsobena netiphoidnymy bakteriemi rodu Salmonella."
+    ]
+  },
+  {
+    "id": 13,
+    "question": "Anasarka",
+    "answer": "otok celého těla.",
+    "source": "Anasarka – otok celého těla.",
+    "category": "Ostatní",
+    "options": [
+      "otok celého těla.",
+      "kokosový.",
+      "9%",
+      "přejedání."
+    ]
+  },
+  {
+    "id": 14,
+    "question": "Agrese",
+    "answer": "utočne jednání z cilem ublížit.",
+    "source": "Agrese – utočne jednání z cilem ublížit.",
+    "category": "Ostatní",
+    "options": [
+      "utočne jednání z cilem ublížit.",
+      "příznaky, projevy nemocí",
+      "18,6 – 24,9",
+      "trestní čin"
+    ]
+  },
+  {
+    "id": 15,
+    "question": "Angina pectoris",
+    "answer": "onemocnění které vzniká při nedostatečnem prokrvení srdečního svalu.",
+    "source": "Angina pectoris –onemocnění které vzniká při nedostatečnem prokrvení srdečního svalu.",
+    "category": "Kardiologie a KPR",
+    "options": [
+      "onemocnění které vzniká při nedostatečnem prokrvení srdečního svalu.",
+      "anamneza, fizikální výšetření, EKG, ECHO, RTG hrudniku, laboratoř, u pravostranního selháni angio-scyntigrafie.",
+      "nahlé uvolnění řady enzymů, které se vypravuje do krve zejména kreatinkinázy, AST a laktátdehydrogenázy.",
+      "širokou veřejnost, která by za jeho pomoci měla být schopná poskytnout efektivnější kardiopulmonální resuscitaci (KPR)"
+    ]
+  },
+  {
+    "id": 16,
+    "question": "Apnoe",
+    "answer": "nedýcha.",
+    "source": "Apnoe –nedýcha.",
+    "category": "Dýchání",
+    "options": [
+      "nedýcha.",
+      "zpomalené dýchaní, meně než 10 za min.",
+      "hluboké a zrychlené, diabetická koma.",
+      "jednotlivé dechy se postupně prohlubuji a zároveň"
+    ]
+  },
+  {
+    "id": 17,
+    "question": "Bradypnoe znamená",
+    "answer": "zpomalené dýchaní, meně než 10 za min.",
+    "source": "Bradypnoe znamená zpomalené dýchaní, meně než 10 za min.",
+    "category": "Dýchání",
+    "options": [
+      "zpomalené dýchaní, meně než 10 za min.",
+      "hluboké a zrychlené, diabetická koma.",
+      "prohloubené dýcháni.",
+      "jednotlivé dechy se postupně prohlubuji a zároveň"
+    ]
+  },
+  {
+    "id": 18,
+    "question": "Bazální stimulace znamená",
+    "answer": "stimulace smysloveho vnimani.",
+    "source": "Bazální stimulace znamená stimulace smysloveho vnimani.",
+    "category": "Ostatní",
+    "options": [
+      "stimulace smysloveho vnimani.",
+      "věda která zkoumá stárnutí.",
+      "zjištění glomerulární filtrace",
+      "18,6 – 24,9"
+    ]
+  },
+  {
+    "id": 19,
+    "question": "Bazální stimulace je",
+    "answer": "to pedagogický ošetřovatelský process který má nabidnout mentalně postiženym jedincum podněty pro vyvoj jejich osobnosti v jednoduche podobě.",
+    "source": "Bazální stimulace je to pedagogický ošetřovatelský process který má nabidnout mentalně postiženym jedincum podněty pro vyvoj jejich osobnosti v jednoduche podobě.",
+    "category": "Ošetřovatelství",
+    "options": [
+      "to pedagogický ošetřovatelský process který má nabidnout mentalně postiženym jedincum podněty pro vyvoj jejich osobnosti v jednoduche podobě.",
+      "výklad, rozhovor, beseda, přednáška, diskuse ( obě odpovědi jsou správné)",
+      "5-7 let",
+      "neklíd, obličejové křeče, zvýšená reflexní draždivost, opozice šíje (pacient nepřeloží hlavu na sternum), natažené břicho."
+    ]
+  },
+  {
+    "id": 20,
+    "question": "Bulemie je",
+    "answer": "přejedání.",
+    "source": "Bulemie je přejedání.",
+    "category": "Ostatní",
+    "options": [
+      "přejedání.",
+      "aplikace do kloubu.",
+      "do kloubů",
+      "37,8 – 41°C."
+    ]
+  },
+  {
+    "id": 21,
+    "question": "Burgerová choroba je",
+    "answer": "zanětlivé onemocnění cev, okrajových časti končetin.",
+    "source": "Burgerová choroba je zanětlivé onemocnění cev, okrajových časti končetin.",
+    "category": "Ostatní",
+    "options": [
+      "zanětlivé onemocnění cev, okrajových časti končetin.",
+      "popírání a izolace, hněv/zlost, smlouváni, depresse, akceptace (smíření)",
+      "žádanka k danemu výšetření, štítek, zkumavka, odběr.",
+      "normální klidové dychaní (15-20 dechu)."
+    ]
+  },
+  {
+    "id": 22,
+    "question": "Biotovo dýchání",
+    "answer": "různé dechové vlny se nepravidelně střidaji s apnoickými pauzamy meningitidy, encefalitidy.",
+    "source": "Biotovo dýchání- různé dechové vlny se nepravidelně střidaji s apnoickými pauzamy meningitidy, encefalitidy.",
+    "category": "Dýchání",
+    "options": [
+      "různé dechové vlny se nepravidelně střidaji s apnoickými pauzamy meningitidy, encefalitidy.",
+      "hluboké a zrychlené, diabetická koma.",
+      "prohloubené dýcháni.",
+      "nedýcha."
+    ]
+  },
+  {
+    "id": 23,
+    "question": "CAN znamená",
+    "answer": "syndrom týraného, zneužívaného a zanedbávaného dítěte",
+    "source": "CAN znamená syndrom týraného, zneužívaného a zanedbávaného dítěte",
+    "category": "Ostatní",
+    "options": [
+      "syndrom týraného, zneužívaného a zanedbávaného dítěte",
+      "zanětlivé onemocnění cev, okrajových časti končetin.",
+      "4x denně, 2x po týdnu, nebo 3x denně.",
+      "Vsemirní Zdravotní Organizace."
+    ]
+  },
+  {
+    "id": 24,
+    "question": "Co není příznakem vzniku dekubit",
+    "answer": "psychický stav.",
+    "source": "Co není příznakem vzniku dekubit- psychický stav.",
+    "category": "Ostatní",
+    "options": [
+      "psychický stav.",
+      "přejedání.",
+      "9%",
+      "otok celého těla."
+    ]
+  },
+  {
+    "id": 25,
+    "question": "Clearance kreatininu jé indikátorem pro",
+    "answer": "zjištění glomerulární filtrace",
+    "source": "Clearance kreatininu jé indikátorem pro zjištění glomerulární filtrace",
+    "category": "Ostatní",
+    "options": [
+      "zjištění glomerulární filtrace",
+      "příznaky, projevy nemocí",
+      "endoskopické vyšetřeni dutiny břišní",
+      "18,6 – 24,9"
+    ]
+  },
+  {
+    "id": 26,
+    "question": "Cronova nemoc je",
+    "answer": "chronické zanětlíve nespecifický střevní onemocnění, které postihuje různé úseky střeva",
+    "source": "Cronova nemoc je chronické zanětlíve nespecifický střevní onemocnění, které postihuje různé úseky střeva",
+    "category": "Gastroenterologie",
+    "options": [
+      "chronické zanětlíve nespecifický střevní onemocnění, které postihuje různé úseky střeva",
+      "podání farmaceutických roztoku do trávicího traktu.",
+      "porucha střevní motility a defikáce.",
+      "věk, mužské pohlaví, životní styl, dědíčnost, nespecificke střevní zanety"
+    ]
+  },
+  {
+    "id": 27,
+    "question": "Chemoreceptory, které se podílí na řízeni dýcháni, jsou uloženy v",
+    "answer": "prodloužene míše",
+    "source": "Chemoreceptory, které se podílí na řízeni dýcháni, jsou uloženy v prodloužene míše",
+    "category": "Dýchání",
+    "options": [
+      "prodloužene míše",
+      "akutní alergický stav, který provází bronchospasmus, pokles krevního tlaku, oběhové selhání a distribuční šok.",
+      "nedostatečný příjem bílkovin, malnutrice, DM,anemie, obezita, hypertenze, nedostatek vit. C , hypoxie, hypotermie, kouření.",
+      "jednotlivé dechy se postupně prohlubuji a zároveň"
+    ]
+  },
+  {
+    "id": 28,
+    "question": "Charakteristickým rysem glaukomu je",
+    "answer": "zvýšení nitroočního tlaku, zužení zorného pole, změna optického nervu se zrůsta i jejich frekvence ( bezvědomí nebo ve spanku)",
+    "source": "Charakteristickým rysem glaukomu je zvýšení nitroočního tlaku, zužení zorného pole, změna optického nervu se zrůsta i jejich frekvence ( bezvědomí nebo ve spanku)",
+    "category": "Neurologie",
+    "options": [
+      "zvýšení nitroočního tlaku, zužení zorného pole, změna optického nervu se zrůsta i jejich frekvence ( bezvědomí nebo ve spanku)",
+      "somnolence, sopor, koma",
+      "zotavovací polohy na boku.",
+      "zánět mozkových blan, nebo plen."
+    ]
+  },
+  {
+    "id": 29,
+    "question": "Cheyncovo-Stokesovo dýchání",
+    "answer": "jednotlivé dechy se postupně prohlubuji a zároveň",
+    "source": "Cheyncovo-Stokesovo dýchání- jednotlivé dechy se postupně prohlubuji a zároveň",
+    "category": "Dýchání",
+    "options": [
+      "jednotlivé dechy se postupně prohlubuji a zároveň",
+      "nedýcha.",
+      "namáhové dýchaní pomoci slalstva.",
+      "zpomalené dýchaní, meně než 10 za min."
+    ]
+  },
+  {
+    "id": 30,
+    "question": "Čtvrtá etapa práce řádného, je",
+    "answer": "žadna z odpovědí naní správná.",
+    "source": "Čtvrtá etapa práce řádného, je žadna z odpovědí naní správná.",
+    "category": "Ostatní",
+    "options": [
+      "žadna z odpovědí naní správná.",
+      "stimulace smysloveho vnimani.",
+      "Vsemirní Zdravotní Organizace.",
+      "endoskopické vyšetřeni dutiny břišní"
+    ]
+  },
+  {
+    "id": 31,
+    "question": "Dieta č 6 je",
+    "answer": "nizkobilkovinna.",
+    "source": "Dieta č 6 je nizkobilkovinna.",
+    "category": "Gastroenterologie",
+    "options": [
+      "nizkobilkovinna.",
+      "žlučniková.",
+      "bezezbytková",
+      "redukční, pro hubnutí."
+    ]
+  },
+  {
+    "id": 32,
+    "question": "Dieta č 3 je",
+    "answer": "racionální.",
+    "source": "Dieta č 3 je racionální.",
+    "category": "Gastroenterologie",
+    "options": [
+      "racionální.",
+      "diabetická.",
+      "nizkobilkovinna.",
+      "bezezbytková"
+    ]
+  },
+  {
+    "id": 33,
+    "question": "Dieta č 8 je",
+    "answer": "redukční, pro hubnutí.",
+    "source": "Dieta č 8 je redukční, pro hubnutí.",
+    "category": "Ošetřovatelství",
+    "options": [
+      "redukční, pro hubnutí.",
+      "racionální.",
+      "nizkobilkovinna.",
+      "bezezbytková"
+    ]
+  },
+  {
+    "id": 34,
+    "question": "Dieta č 4 je",
+    "answer": "žlučniková.",
+    "source": "Dieta č 4 je žlučniková.",
+    "category": "Gastroenterologie",
+    "options": [
+      "žlučniková.",
+      "nizkobilkovinna.",
+      "racionální.",
+      "diabetická."
+    ]
+  },
+  {
+    "id": 35,
+    "question": "Dieta č 9 je",
+    "answer": "diabetická.",
+    "source": "Dieta č 9 je diabetická.",
+    "category": "Diabetes",
+    "options": [
+      "diabetická.",
+      "žlučniková.",
+      "redukční, pro hubnutí.",
+      "racionální."
+    ]
+  },
+  {
+    "id": 36,
+    "question": "Dyspnoe je",
+    "answer": "namáhové dýchaní pomoci slalstva.",
+    "source": "Dyspnoe je namáhové dýchaní pomoci slalstva.",
+    "category": "Dýchání",
+    "options": [
+      "namáhové dýchaní pomoci slalstva.",
+      "hluboké a zrychlené, diabetická koma.",
+      "různé dechové vlny se nepravidelně střidaji s apnoickými pauzamy meningitidy, encefalitidy.",
+      "nedýcha."
+    ]
+  },
+  {
+    "id": 37,
+    "question": "Dysurie je",
+    "answer": "obtížite a bolestlive močení.",
+    "source": "Dysurie je obtížite a bolestlive močení.",
+    "category": "Urologie",
+    "options": [
+      "obtížite a bolestlive močení.",
+      "v 6 hodin se vymočit do WC a poté močit do označené nádoby, sběr moči se ukončí v 6 ráno následujícího dne",
+      "částe močení, větší množství moče (2-3 l a vice).",
+      "únik močí při zvýšeném intraabdominálnim tlaku"
+    ]
+  },
+  {
+    "id": 38,
+    "question": "Dystrofie je",
+    "answer": "nejnižši stupeň regresyvního poškození buněk a extracejularní tkani.",
+    "source": "Dystrofie je nejnižši stupeň regresyvního poškození buněk a extracejularní tkani.",
+    "category": "Ostatní",
+    "options": [
+      "nejnižši stupeň regresyvního poškození buněk a extracejularní tkani.",
+      "neodkladná, akutní, nezbytná a plánovaná",
+      "zvýšená spavost, malátnost, apatie, bradykardie, zpomalenost, bolesti kloubu, vypadaní vlasů.",
+      "to systemové zhoubné nádorové onemocněni mízních uzlin."
+    ]
+  },
+  {
+    "id": 39,
+    "question": "Do neverbalní komunikace nepatři",
+    "answer": "psané slova",
+    "source": "Do neverbalní komunikace nepatři psané slova",
+    "category": "Ošetřovatelství",
+    "options": [
+      "psané slova",
+      "komunikace pomoci slov prostřednictvim jazyka.",
+      "pacient je v neustálé lékařské péči. Pozorování je u lékaře při pravidelných kontrolách",
+      "vyuka nemocného k samostatnější péči o vlastní onemocnění při které přebirá větší část odpovědností za vlastní zdravi na sebe. Edukace známena poučení."
+    ]
+  },
+  {
+    "id": 40,
+    "question": "Diabetes nezavisly na inzulinu",
+    "answer": "diabetes mellitus II typu",
+    "source": "Diabetes nezavisly na inzulinu diabetes mellitus II typu",
+    "category": "Diabetes",
+    "options": [
+      "diabetes mellitus II typu",
+      "všechny změny na dolnich končetinách, které vznikají v důsledku onemocnění “diabetes mellitus”",
+      "diabetická.",
+      "1typu."
+    ]
+  },
+  {
+    "id": 41,
+    "question": "Dieta č. 5 nazývá",
+    "answer": "bezezbytková",
+    "source": "Dieta č. 5 nazývá bezezbytková",
+    "category": "Gastroenterologie",
+    "options": [
+      "bezezbytková",
+      "racionální.",
+      "žlučniková.",
+      "nizkobilkovinna."
+    ]
+  },
+  {
+    "id": 42,
+    "question": "Diabetická noha znamená",
+    "answer": "všechny změny na dolnich končetinách, které vznikají v důsledku onemocnění “diabetes mellitus”",
+    "source": "Diabetická noha znamená všechny změny na dolnich končetinách, které vznikají v důsledku onemocnění “diabetes mellitus”",
+    "category": "Diabetes",
+    "options": [
+      "všechny změny na dolnich končetinách, které vznikají v důsledku onemocnění “diabetes mellitus”",
+      "hluboké a zrychlené, diabetická koma.",
+      "změnami na DK související s onemocněním “diabetes mellitus”",
+      "diabetická."
+    ]
+  },
+  {
+    "id": 43,
+    "question": "Druhy zdravotní peče podle naléhavosti jsou",
+    "answer": "neodkladná, akutní, nezbytná a plánovaná",
+    "source": "Druhy zdravotní peče podle naléhavosti jsou neodkladná, akutní, nezbytná a plánovaná",
+    "category": "Ostatní",
+    "options": [
+      "neodkladná, akutní, nezbytná a plánovaná",
+      "Vsemirní Zdravotní Organizace.",
+      "zjištění glomerulární filtrace",
+      "aplikace do kloubu."
+    ]
+  },
+  {
+    "id": 44,
+    "question": "Dispanserizace znamená",
+    "answer": "pravidelný lékařský dohled nad pacientem trpícím určitou chorobou",
+    "source": "Dispanserizace znamená pravidelný lékařský dohled nad pacientem trpícím určitou chorobou",
+    "category": "Ošetřovatelství",
+    "options": [
+      "pravidelný lékařský dohled nad pacientem trpícím určitou chorobou",
+      "pacient je v neustálé lékařské péči. Pozorování je u lékaře při pravidelných kontrolách",
+      "redukční, pro hubnutí.",
+      "to je obečné označení po dalši vicedenní lečbu u lůžkovem zdravotnickem zařízení, které nelze léčit ambulantně."
+    ]
+  },
+  {
+    "id": 45,
+    "question": "Didaktickými formami edukace se rozumí",
+    "answer": "uspořádání edukačního procesu při jeho realizací",
+    "source": "Didaktickými formami edukace se rozumí uspořádání edukačního procesu při jeho realizací",
+    "category": "Ošetřovatelství",
+    "options": [
+      "uspořádání edukačního procesu při jeho realizací",
+      "vyuka nemocného k samostatnější péči o vlastní onemocnění při které přebirá větší část odpovědností za vlastní zdravi na sebe. Edukace známena poučení.",
+      "výklad, rozhovor, beseda, přednáška, diskuse ( obě odpovědi jsou správné)",
+      "to pedagogický ošetřovatelský process který má nabidnout mentalně postiženym jedincum podněty pro vyvoj jejich osobnosti v jednoduche podobě."
+    ]
+  },
+  {
+    "id": 46,
+    "question": "Diureza",
+    "answer": "množství moči za 24 hod vytvořena ledvinamy (1500ml )",
+    "source": "Diureza- množství moči za 24 hod vytvořena ledvinamy (1500ml )",
+    "category": "Urologie",
+    "options": [
+      "množství moči za 24 hod vytvořena ledvinamy (1500ml )",
+      "samovolné odkapavání moče.",
+      "přítomnost krve v moči .",
+      "bílkovina v moči."
+    ]
+  },
+  {
+    "id": 47,
+    "question": "Enureza",
+    "answer": "porucha schopností udržet moč.",
+    "source": "Enureza- porucha schopností udržet moč.",
+    "category": "Urologie",
+    "options": [
+      "porucha schopností udržet moč.",
+      "bolest a řezavý pocit při močení.",
+      "samovolné odkapavání moče.",
+      "částe močení, větší množství moče (2-3 l a vice)."
+    ]
+  },
+  {
+    "id": 48,
+    "question": "ERCP je",
+    "answer": "endoskopická vyšetřovací a léčebna metoda, která spočívá v zavedení fibroskopu do duodena, prohlednutí dané oblasť a v nástřiku kontrastní látky do žlučovodu a vývodu slinivky břišní s následným rentgenovým snímkováním.",
+    "source": "ERCP je endoskopická vyšetřovací a léčebna metoda, která spočívá v zavedení fibroskopu do duodena, prohlednutí dané oblasť a v nástřiku kontrastní látky do žlučovodu a vývodu slinivky břišní s následným rentgenovým snímkováním.",
+    "category": "Diabetes",
+    "options": [
+      "endoskopická vyšetřovací a léčebna metoda, která spočívá v zavedení fibroskopu do duodena, prohlednutí dané oblasť a v nástřiku kontrastní látky do žlučovodu a vývodu slinivky břišní s následným rentgenovým snímkováním.",
+      "perkutánní endoskopická gastrostomie",
+      "endoskopické vyšetřeni dutiny břišní",
+      "chirurgické otevřeni dutiny břicha"
+    ]
+  },
+  {
+    "id": 49,
+    "question": "Enteralní výživa je",
+    "answer": "podání farmaceutických roztoku do trávicího traktu.",
+    "source": "Enteralní výživa je podání farmaceutických roztoku do trávicího traktu.",
+    "category": "Gastroenterologie",
+    "options": [
+      "podání farmaceutických roztoku do trávicího traktu.",
+      "porucha střevní motility a defikáce.",
+      "zimomřivost, snížená výkonnost, zpomaleni metabolizmu I střev (přibývání na váze a zacpa), sucha a olupující se pokožka, lomivé nehty, vypadávaní vlasu, zpomaleni reflexu achillovy šlachy.",
+      "genetické dyspozice, stress, dlouhodobá špatná strava, kouření, Helikobakter pylori."
+    ]
+  },
+  {
+    "id": 50,
+    "question": "Edukace",
+    "answer": "vyuka nemocného k samostatnější péči o vlastní onemocnění při které přebirá větší část odpovědností za vlastní zdravi na sebe. Edukace známena poučení.",
+    "source": "Edukace- vyuka nemocného k samostatnější péči o vlastní onemocnění při které přebirá větší část odpovědností za vlastní zdravi na sebe. Edukace známena poučení.",
+    "category": "Ošetřovatelství",
+    "options": [
+      "vyuka nemocného k samostatnější péči o vlastní onemocnění při které přebirá větší část odpovědností za vlastní zdravi na sebe. Edukace známena poučení.",
+      "neklíd, obličejové křeče, zvýšená reflexní draždivost, opozice šíje (pacient nepřeloží hlavu na sternum), natažené břicho.",
+      "to je obečné označení po dalši vicedenní lečbu u lůžkovem zdravotnickem zařízení, které nelze léčit ambulantně.",
+      "psané slova"
+    ]
+  },
+  {
+    "id": 51,
+    "question": "Enzymy u IM",
+    "answer": "troponin, myoglobin pro BNP koagulace, astrup / vyšetření/ moč CH+S.",
+    "source": "Enzymy u IM- troponin, myoglobin pro BNP koagulace, astrup / vyšetření/ moč CH+S.",
+    "category": "Urologie",
+    "options": [
+      "troponin, myoglobin pro BNP koagulace, astrup / vyšetření/ moč CH+S.",
+      "částe nucení na moč.",
+      "porucha schopností udržet moč.",
+      "noční močení."
+    ]
+  },
+  {
+    "id": 52,
+    "question": "Epistaxe",
+    "answer": "krvácení ze sliznic.",
+    "source": "Epistaxe- krvácení ze sliznic.",
+    "category": "Krev a šok",
+    "options": [
+      "krvácení ze sliznic.",
+      "(Diseminovaná Intravaskularni Koagulace)- přidružená porucha koagulačního systému komplikujcí základní závažné onemocnění",
+      "dodávat kyslík do tkání",
+      "krvácení do kůže (petechie, purpure, sufuze), krvácení ze sliznic, epistaxe (krvacení z nosu), krvácení z dásni, neúměrné krvácení po běžných poraněních a během chirurgických výkonu"
+    ]
+  },
+  {
+    "id": 53,
+    "question": "Fraxiparine se aplikuje",
+    "answer": "pod uhlem 90°, do kožní řasy která se drží po celou dobu aplikace, střídat místa vpichu v oblasti břicha ve směru hodinových ručiček, místo vpichu nemasírovat",
+    "source": "Fraxiparine se aplikuje pod uhlem 90°, do kožní řasy která se drží po celou dobu aplikace, střídat místa vpichu v oblasti břicha ve směru hodinových ručiček, místo vpichu nemasírovat",
+    "category": "Ostatní",
+    "options": [
+      "pod uhlem 90°, do kožní řasy která se drží po celou dobu aplikace, střídat místa vpichu v oblasti břicha ve směru hodinových ručiček, místo vpichu nemasírovat",
+      "soustava psychologických vlastnosti které se projevuje zejména jak snadno vznikají emoce, jak jsou silně,jak živé se projevuje navenek, jak rychlé se střidají.",
+      "sekundarní porucha hybnosti zapříčiněna, imobilitou, která zasahuje fizickou I duševní stránku človeka.",
+      "poruchu acidobazické rovnováhy, při které stoupa pH nad fyziologickou mez"
+    ]
+  },
+  {
+    "id": 54,
+    "question": "Fowlerova poloha je",
+    "answer": "horní polovina těla zvednuta přibližně na 45° -90°",
+    "source": "Fowlerova poloha je horní polovina těla zvednuta přibližně na 45° -90°",
+    "category": "Polohy",
+    "options": [
+      "horní polovina těla zvednuta přibližně na 45° -90°",
+      "jedna DK je pokrčená, druha natažená. Při popaleninách, traumach, pleuritidě.",
+      "nemocný sedí ze spuštěnymi DK které jsou opřeny, HK se opirá o stolek nebo o lůžko",
+      "kterou pacient zaujimá především z důvodu ulehčení dychaní při onemocnění plic."
+    ]
+  },
+  {
+    "id": 55,
+    "question": "Funkce hemoglobin",
+    "answer": "dodávat kyslík do tkání",
+    "source": "Funkce hemoglobin dodávat kyslík do tkání",
+    "category": "Krev a šok",
+    "options": [
+      "dodávat kyslík do tkání",
+      "je nutné řádně používat ochranné prostředky, pří prácí s materiálem nejíst, nekouřit, manípulovat s materíálem aby nedošlo k poranění",
+      "zánět a srazenina v krvi.",
+      "hemoragický."
+    ]
+  },
+  {
+    "id": 56,
+    "question": "Fertilní záchvaty se nejčastěi vyskytují u pacienty ve věku",
+    "answer": "5-7 let",
+    "source": "Fertilní záchvaty se nejčastěi vyskytují u pacienty ve věku 5-7 let",
+    "category": "Ošetřovatelství",
+    "options": [
+      "5-7 let",
+      "to soubor duševních příznaku které se objevuje u dítěte následkem dlouhodobého pobytu v nemocnici.",
+      "pacient je v neustálé lékařské péči. Pozorování je u lékaře při pravidelných kontrolách",
+      "úzkost, trizm (obličejový křeče), zvýšená reflexní vzrušivost, ztuhé svaly (pacient nemůže naklonit hlavu k hrudníku), žaludek se zatáhl dovnitř"
+    ]
+  },
+  {
+    "id": 57,
+    "question": "Fluidotorax znamena",
+    "answer": "tekutina v dutině hrudní",
+    "source": "Fluidotorax znamena tekutina v dutině hrudní",
+    "category": "Ostatní",
+    "options": [
+      "tekutina v dutině hrudní",
+      "přejedání.",
+      "utočne jednání z cilem ublížit.",
+      "příznaky, projevy nemocí"
+    ]
+  },
+  {
+    "id": 58,
+    "question": "Febrylitet",
+    "answer": "37,8 – 41°C.",
+    "source": "Febrylitet - 37,8 – 41°C.",
+    "category": "Ostatní",
+    "options": [
+      "37,8 – 41°C.",
+      "aplikace do kloubu.",
+      "věda která zkoumá stárnutí.",
+      "zužení."
+    ]
+  },
+  {
+    "id": 59,
+    "question": "Faktory zhoršující hojení defektu jsou:",
+    "answer": "nedostatečný příjem bílkovin, malnutrice, DM,anemie, obezita, hypertenze, nedostatek vit. C , hypoxie, hypotermie, kouření.",
+    "source": "Faktory zhoršující hojení defektu jsou: nedostatečný příjem bílkovin, malnutrice, DM,anemie, obezita, hypertenze, nedostatek vit. C , hypoxie, hypotermie, kouření.",
+    "category": "Dýchání",
+    "options": [
+      "nedostatečný příjem bílkovin, malnutrice, DM,anemie, obezita, hypertenze, nedostatek vit. C , hypoxie, hypotermie, kouření.",
+      "nedýcha.",
+      "namáhové dýchaní pomoci slalstva.",
+      "chronické zánětlivé onemocnění dýchacích cest s bronchíalní obstrukcí."
+    ]
+  },
+  {
+    "id": 60,
+    "question": "Febris intermittens se označuje jako",
+    "answer": "střidaní horečky a normální teploty.",
+    "source": "Febris intermittens se označuje jako střidaní horečky a normální teploty.",
+    "category": "Kardiologie a KPR",
+    "options": [
+      "střidaní horečky a normální teploty.",
+      "nahlé uvolnění řady enzymů, které se vypravuje do krve zejména kreatinkinázy, AST a laktátdehydrogenázy.",
+      "anamneza, fizikální výšetření, EKG, ECHO, RTG hrudniku, laboratoř, u pravostranního selháni angio-scyntigrafie.",
+      "ateroskleroza"
+    ]
+  },
+  {
+    "id": 61,
+    "question": "Glaukoma (typické příznaky)",
+    "answer": "bolesti hlavy, bolesti za očním bůlbem a zvýšení nitroočního tlaku",
+    "source": "Glaukoma (typické příznaky)- bolesti hlavy, bolesti za očním bůlbem a zvýšení nitroočního tlaku",
+    "category": "Neurologie",
+    "options": [
+      "bolesti hlavy, bolesti za očním bůlbem a zvýšení nitroočního tlaku",
+      "bledost, poceni, chvění (třes), úzkost, slabost, hlad, naueza a zvraceni, tachykardie, zmatenost, změny osobnosti, závratě, bolesti hlavy, křeče až koma, neschopnost soustředit se, opřený pohled.",
+      "zotavovací polohy na boku.",
+      "vysoká horečka, ztuhlost těla, bolest hlavy, zvrácení, procitlivost na světlo, může dojít až ke komatu, krční křeče."
+    ]
+  },
+  {
+    "id": 62,
+    "question": "GSC",
+    "answer": "je to škála kterou se vyznačí stav vědomí.",
+    "source": "GSC- je to škála kterou se vyznačí stav vědomí.",
+    "category": "Neurologie",
+    "options": [
+      "je to škála kterou se vyznačí stav vědomí.",
+      "zvýšení nitroočního tlaku, zužení zorného pole, změna optického nervu se zrůsta i jejich frekvence ( bezvědomí nebo ve spanku)",
+      "bolesti hlavy, bolesti za očním bůlbem a zvýšení nitroočního tlaku",
+      "zotavovací polohy na boku."
+    ]
+  },
+  {
+    "id": 63,
+    "question": "Gerontologie je",
+    "answer": "věda která zkoumá stárnutí.",
+    "source": "Gerontologie je věda která zkoumá stárnutí.",
+    "category": "Ostatní",
+    "options": [
+      "věda která zkoumá stárnutí.",
+      "psychický stav.",
+      "zjištění glomerulární filtrace",
+      "přejedání."
+    ]
+  },
+  {
+    "id": 64,
+    "question": "Hladina glukozy v krvi",
+    "answer": "3,5-6,5 mmol",
+    "source": "Hladina glukozy v krvi - 3,5-6,5 mmol",
+    "category": "Diabetes",
+    "options": [
+      "3,5-6,5 mmol",
+      "7,35-7,45.",
+      "60-90 tepů/min.",
+      "18,6 – 24,9"
+    ]
+  },
+  {
+    "id": 65,
+    "question": "Hemolýza je",
+    "answer": "rozpad červených krvinek.",
+    "source": "Hemolýza je rozpad červených krvinek.",
+    "category": "Krev a šok",
+    "options": [
+      "rozpad červených krvinek.",
+      "krvácení do kůže (petechie, purpure, sufuze), krvácení ze sliznic, epistaxe (krvacení z nosu), krvácení z dásni, neúměrné krvácení po běžných poraněních a během chirurgických výkonu",
+      "nedostatek železa v krve.",
+      "onemocnění krve, konkretně červených krvinek."
+    ]
+  },
+  {
+    "id": 66,
+    "question": "Hospitalizmus je",
+    "answer": "to soubor duševních příznaku které se objevuje u dítěte následkem dlouhodobého pobytu v nemocnici.",
+    "source": "Hospitalizmus je to soubor duševních příznaku které se objevuje u dítěte následkem dlouhodobého pobytu v nemocnici.",
+    "category": "Ošetřovatelství",
+    "options": [
+      "to soubor duševních příznaku které se objevuje u dítěte následkem dlouhodobého pobytu v nemocnici.",
+      "na úctu, důstojné zacházení, na ohleduplnoct a respektování soukromí",
+      "uspořádání edukačního procesu při jeho realizací",
+      "komunikace pomoci slov prostřednictvim jazyka."
+    ]
+  },
+  {
+    "id": 67,
+    "question": "Hodkinová choroba je",
+    "answer": "to systemové zhoubné nádorové onemocněni mízních uzlin.",
+    "source": "Hodkinová choroba je to systemové zhoubné nádorové onemocněni mízních uzlin.",
+    "category": "Ostatní",
+    "options": [
+      "to systemové zhoubné nádorové onemocněni mízních uzlin.",
+      "hluboký prožitky a smutným životem, je pro něj obtížný",
+      "stimulace smysloveho vnimani.",
+      "zanětlivé onemocnění cev, okrajových časti končetin."
+    ]
+  },
+  {
+    "id": 68,
+    "question": "Hypoxemie (příčiny)",
+    "answer": "hypoventilace, porucha difuze, porucha perfuze, zkrat",
+    "source": "Hypoxemie (příčiny)- hypoventilace, porucha difuze, porucha perfuze, zkrat",
+    "category": "Dýchání",
+    "options": [
+      "hypoventilace, porucha difuze, porucha perfuze, zkrat",
+      "hypotenze, tachykardie, bledá a zpocené kůže, rychlé dýchání, úzkost oběti.",
+      "nedýcha.",
+      "to chronická obstrukční plicní nemoc. Onemocnění DDC."
+    ]
+  },
+  {
+    "id": 69,
+    "question": "Hyperpnoe",
+    "answer": "prohloubené dýcháni.",
+    "source": "Hyperpnoe- prohloubené dýcháni.",
+    "category": "Dýchání",
+    "options": [
+      "prohloubené dýcháni.",
+      "hluboké a zrychlené, diabetická koma.",
+      "zpomalené dýchaní, meně než 10 za min.",
+      "normální klidové dychaní (15-20 dechu)."
+    ]
+  },
+  {
+    "id": 70,
+    "question": "Hypotyreóza",
+    "answer": "zvýšená spavost, malátnost, apatie, bradykardie, zpomalenost, bolesti kloubu, vypadaní vlasů.",
+    "source": "Hypotyreóza- zvýšená spavost, malátnost, apatie, bradykardie, zpomalenost, bolesti kloubu, vypadaní vlasů.",
+    "category": "Ostatní",
+    "options": [
+      "zvýšená spavost, malátnost, apatie, bradykardie, zpomalenost, bolesti kloubu, vypadaní vlasů.",
+      "chirurgické otevřeni dutiny břicha",
+      "zjištění glomerulární filtrace",
+      "sekundarní porucha hybnosti zapříčiněna, imobilitou, která zasahuje fizickou I duševní stránku človeka."
+    ]
+  },
+  {
+    "id": 71,
+    "question": "Hypertyreóza",
+    "answer": "paroxyzmální hypertenze, nervozita, nespavost, Besedová choroba- velké oči.",
+    "source": "Hypertyreóza- paroxyzmální hypertenze, nervozita, nespavost, Besedová choroba- velké oči.",
+    "category": "Ostatní",
+    "options": [
+      "paroxyzmální hypertenze, nervozita, nespavost, Besedová choroba- velké oči.",
+      "nejnižši stupeň regresyvního poškození buněk a extracejularní tkani.",
+      "poruchu acidobazické rovnováhy, při které stoupa pH nad fyziologickou mez",
+      "popírání a izolace, hněv/zlost, smlouváni, depresse, akceptace (smíření)"
+    ]
+  },
+  {
+    "id": 72,
+    "question": "Hyperglykemická kóma",
+    "answer": "polyurie, polydipsie( nadměrná žízeň), nauzea, zvraceni, slabost, pach moče jablkama, Kussmaulovo dýcháni, pach z úst acetonu.",
+    "source": "Hyperglykemická kóma- polyurie, polydipsie( nadměrná žízeň), nauzea, zvraceni, slabost, pach moče jablkama, Kussmaulovo dýcháni, pach z úst acetonu.",
+    "category": "Urologie",
+    "options": [
+      "polyurie, polydipsie( nadměrná žízeň), nauzea, zvraceni, slabost, pach moče jablkama, Kussmaulovo dýcháni, pach z úst acetonu.",
+      "hodně cukru v krve.",
+      "malo cukru v krve.",
+      "bledost, poceni, chvění (třes), úzkost, slabost, hlad, naueza a zvraceni, tachykardie, zmatenost, změny osobnosti, závratě, bolesti hlavy, křeče až koma, neschopnost soustředit se, opřený pohled."
+    ]
+  },
+  {
+    "id": 73,
+    "question": "Hematurie",
+    "answer": "přítomnost krve v moči .",
+    "source": "Hematurie- přítomnost krve v moči .",
+    "category": "Urologie",
+    "options": [
+      "přítomnost krve v moči .",
+      "samovolné odkapavání moče.",
+      "částe nucení na moč.",
+      "částe močení, větší množství moče (2-3 l a vice)."
+    ]
+  },
+  {
+    "id": 74,
+    "question": "Hypoglikemický šok",
+    "answer": "malo cukru v krve.",
+    "source": "Hypoglikemický šok- malo cukru v krve.",
+    "category": "Krev a šok",
+    "options": [
+      "malo cukru v krve.",
+      "hodně cukru v krve.",
+      "bledost, poceni, chvění (třes), úzkost, slabost, hlad, naueza a zvraceni, tachykardie, zmatenost, změny osobnosti, závratě, bolesti hlavy, křeče až koma, neschopnost soustředit se, opřený pohled.",
+      "polyurie, polydipsie( nadměrná žízeň), nauzea, zvraceni, slabost, pach moče jablkama, Kussmaulovo dýcháni, pach z úst acetonu."
+    ]
+  },
+  {
+    "id": 75,
+    "question": "Hyperglikemický šok",
+    "answer": "hodně cukru v krve.",
+    "source": "Hyperglikemický šok- hodně cukru v krve.",
+    "category": "Krev a šok",
+    "options": [
+      "hodně cukru v krve.",
+      "polyurie, polydipsie( nadměrná žízeň), nauzea, zvraceni, slabost, pach moče jablkama, Kussmaulovo dýcháni, pach z úst acetonu.",
+      "malo cukru v krve.",
+      "bledost, poceni, chvění (třes), úzkost, slabost, hlad, naueza a zvraceni, tachykardie, zmatenost, změny osobnosti, závratě, bolesti hlavy, křeče až koma, neschopnost soustředit se, opřený pohled."
+    ]
+  },
+  {
+    "id": 76,
+    "question": "Hospitalizace",
+    "answer": "to je obečné označení po dalši vicedenní lečbu u lůžkovem zdravotnickem zařízení, které nelze léčit ambulantně.",
+    "source": "Hospitalizace- to je obečné označení po dalši vicedenní lečbu u lůžkovem zdravotnickem zařízení, které nelze léčit ambulantně.",
+    "category": "Ošetřovatelství",
+    "options": [
+      "to je obečné označení po dalši vicedenní lečbu u lůžkovem zdravotnickem zařízení, které nelze léčit ambulantně.",
+      "imitace, manipulace, zpřecnovaní, koordinace, automatizace",
+      "neklíd, obličejové křeče, zvýšená reflexní draždivost, opozice šíje (pacient nepřeloží hlavu na sternum), natažené břicho.",
+      "na úctu, důstojné zacházení, na ohleduplnoct a respektování soukromí"
+    ]
+  },
+  {
+    "id": 77,
+    "question": "Hypofunkce štítné žlázy(příznaky)",
+    "answer": "zimomřivost, snížená výkonnost, zpomaleni metabolizmu I střev (přibývání na váze a zacpa), sucha a olupující se pokožka, lomivé nehty, vypadávaní vlasu, zpomaleni reflexu achillovy šlachy.",
+    "source": "Hypofunkce štítné žlázy(příznaky) - zimomřivost, snížená výkonnost, zpomaleni metabolizmu I střev (přibývání na váze a zacpa), sucha a olupující se pokožka, lomivé nehty, vypadávaní vlasu, zpomaleni reflexu achillovy šlachy.",
+    "category": "Gastroenterologie",
+    "options": [
+      "zimomřivost, snížená výkonnost, zpomaleni metabolizmu I střev (přibývání na váze a zacpa), sucha a olupující se pokožka, lomivé nehty, vypadávaní vlasu, zpomaleni reflexu achillovy šlachy.",
+      "žlučniková.",
+      "vyvod, vyustění něčeho někam.",
+      "bolest břicha, nevolnost, zvraceni, nechutenství, hubnuti, pocit plnosti, paleni žáhy, zápach z úst"
+    ]
+  },
+  {
+    "id": 78,
+    "question": "Hypoglykémie(příznaky)",
+    "answer": "bledost, poceni, chvění (třes), úzkost, slabost, hlad, naueza a zvraceni, tachykardie, zmatenost, změny osobnosti, závratě, bolesti hlavy, křeče až koma, neschopnost soustředit se, opřený pohled.",
+    "source": "Hypoglykémie(příznaky)- bledost, poceni, chvění (třes), úzkost, slabost, hlad, naueza a zvraceni, tachykardie, zmatenost, změny osobnosti, závratě, bolesti hlavy, křeče až koma, neschopnost soustředit se, opřený pohled.",
+    "category": "Neurologie",
+    "options": [
+      "bledost, poceni, chvění (třes), úzkost, slabost, hlad, naueza a zvraceni, tachykardie, zmatenost, změny osobnosti, závratě, bolesti hlavy, křeče až koma, neschopnost soustředit se, opřený pohled.",
+      "hodně cukru v krve.",
+      "polyurie, polydipsie( nadměrná žízeň), nauzea, zvraceni, slabost, pach moče jablkama, Kussmaulovo dýcháni, pach z úst acetonu.",
+      "malo cukru v krve."
+    ]
+  },
+  {
+    "id": 79,
+    "question": "Izokorie označuje",
+    "answer": "stejná velikost zornic",
+    "source": "Izokorie označuje stejná velikost zornic",
+    "category": "Oční",
+    "options": [
+      "stejná velikost zornic",
+      "různá velikost zornic.",
+      "rozšíření velikost zornic",
+      "zůžené zornice"
+    ]
+  },
+  {
+    "id": 80,
+    "question": "Inkontinence moči z důvodů nepřiměřené kontrakce močového měchýře se označuje jako",
+    "answer": "urgentní",
+    "source": "Inkontinence moči z důvodů nepřiměřené kontrakce močového měchýře se označuje jako- urgentní",
+    "category": "Urologie",
+    "options": [
+      "urgentní",
+      "polyurie, polydipsie( nadměrná žízeň), nauzea, zvraceni, slabost, pach moče jablkama, Kussmaulovo dýcháni, pach z úst acetonu.",
+      "samovolné odkapavání moče.",
+      "obtížite a bolestlive močení."
+    ]
+  },
+  {
+    "id": 81,
+    "question": "Inkontinence",
+    "answer": "neschopnost udržení moči.",
+    "source": "Inkontinence- neschopnost udržení moči.",
+    "category": "Urologie",
+    "options": [
+      "neschopnost udržení moči.",
+      "noční močení.",
+      "samovolné odkapavání moče.",
+      "únik močí při zvýšeném intraabdominálnim tlaku"
+    ]
+  },
+  {
+    "id": 82,
+    "question": "Inzulinozaležnij diabet",
+    "answer": "1typu.",
+    "source": "Inzulinozaležnij diabet- 1typu.",
+    "category": "Diabetes",
+    "options": [
+      "1typu.",
+      "inzulin a glucagon.",
+      "diabetická nefropatie",
+      "endoskopická vyšetřovací a léčebna metoda, která spočívá v zavedení fibroskopu do duodena, prohlednutí dané oblasť a v nástřiku kontrastní látky do žlučovodu a vývodu slinivky břišní s následným rentgenovým snímkováním."
+    ]
+  },
+  {
+    "id": 83,
+    "question": "Intraartykularně",
+    "answer": "aplikace do kloubu.",
+    "source": "Intraartykularně- aplikace do kloubu.",
+    "category": "Ostatní",
+    "options": [
+      "aplikace do kloubu.",
+      "k obnovení životních funkcí",
+      "37,8 – 41°C.",
+      "chirurgické otevřeni dutiny břicha"
+    ]
+  },
+  {
+    "id": 84,
+    "question": "Imobilizačny syndrom je",
+    "answer": "sekundarní porucha hybnosti zapříčiněna, imobilitou, která zasahuje fizickou I duševní stránku človeka.",
+    "source": "Imobilizačny syndrom je- sekundarní porucha hybnosti zapříčiněna, imobilitou, která zasahuje fizickou I duševní stránku človeka.",
+    "category": "Ostatní",
+    "options": [
+      "sekundarní porucha hybnosti zapříčiněna, imobilitou, která zasahuje fizickou I duševní stránku človeka.",
+      "endoskopické vyšetřeni dutiny břišní",
+      "zvýšená spavost, malátnost, apatie, bradykardie, zpomalenost, bolesti kloubu, vypadaní vlasů.",
+      "zanětlivé onemocnění cev, okrajových časti končetin."
+    ]
+  },
+  {
+    "id": 85,
+    "question": "Ischurie znamená",
+    "answer": "zadržení moči v močovem měchýře při nemožnosti močení.",
+    "source": "Ischurie znamená- zadržení moči v močovem měchýře při nemožnosti močení.",
+    "category": "Urologie",
+    "options": [
+      "zadržení moči v močovem měchýře při nemožnosti močení.",
+      "porucha schopností udržet moč.",
+      "meně než 100 ml za 24 hodiny.",
+      "únik močí při zvýšeném intraabdominálnim tlaku"
+    ]
+  },
+  {
+    "id": 86,
+    "question": "Jaký z daných tukiv je nejvíc nasycený",
+    "answer": "kokosový.",
+    "source": "Jaký z daných tukiv je nejvíc nasycený- kokosový.",
+    "category": "Ostatní",
+    "options": [
+      "kokosový.",
+      "pochazí z rostlinových zdroju a rybich oleju (omega 3).",
+      "snížují hladinu LDL cholesterolu a tím I riziko výskytu kardiovaskulárního onemocnění",
+      "sojový olej"
+    ]
+  },
+  {
+    "id": 87,
+    "question": "Jednou z hlavních přičin ICHS",
+    "answer": "nahlé uvolnění řady enzymů, které se vypravuje do krve zejména kreatinkinázy, AST a laktátdehydrogenázy.",
+    "source": "Jednou z hlavních přičin ICHS- nahlé uvolnění řady enzymů, které se vypravuje do krve zejména kreatinkinázy, AST a laktátdehydrogenázy.",
+    "category": "Kardiologie a KPR",
+    "options": [
+      "nahlé uvolnění řady enzymů, které se vypravuje do krve zejména kreatinkinázy, AST a laktátdehydrogenázy.",
+      "60-90 tepů/min.",
+      "ateroskleroza",
+      "širokou veřejnost, která by za jeho pomoci měla být schopná poskytnout efektivnější kardiopulmonální resuscitaci (KPR)"
+    ]
+  },
+  {
+    "id": 88,
+    "question": "Klinické příznaky žaludečního vředu jsou",
+    "answer": "bolest břicha, nevolnost, zvraceni, nechutenství, hubnuti, pocit plnosti, paleni žáhy, zápach z úst",
+    "source": "Klinické příznaky žaludečního vředu jsou- bolest břicha, nevolnost, zvraceni, nechutenství, hubnuti, pocit plnosti, paleni žáhy, zápach z úst",
+    "category": "Gastroenterologie",
+    "options": [
+      "bolest břicha, nevolnost, zvraceni, nechutenství, hubnuti, pocit plnosti, paleni žáhy, zápach z úst",
+      "racionální.",
+      "porucha střevní motility a defikáce.",
+      "věk, mužské pohlaví, životní styl, dědíčnost, nespecificke střevní zanety"
+    ]
+  },
+  {
+    "id": 89,
+    "question": "Kardiopulmonální resuscitace je soubor postupů",
+    "answer": "k obnovení životních funkcí",
+    "source": "Kardiopulmonální resuscitace je soubor postupů- k obnovení životních funkcí",
+    "category": "Ostatní",
+    "options": [
+      "k obnovení životních funkcí",
+      "5 vdechu",
+      "zotavovací polohy na boku.",
+      "30:2 u dospělého a 15: 2 u děti."
+    ]
+  },
+  {
+    "id": 90,
+    "question": "KPR u dítěte se zahajuje",
+    "answer": "5 vdechu",
+    "source": "KPR u dítěte se zahajuje- 5 vdechu",
+    "category": "Kardiologie a KPR",
+    "options": [
+      "5 vdechu",
+      "začit srdeční masaže 100 za min nepřestanne do te doby pokud dorazí pomoc.",
+      "30:2 u dospělého a 15: 2 u děti.",
+      "kdokoliv."
+    ]
+  },
+  {
+    "id": 91,
+    "question": "Klinické vyšetření",
+    "answer": "pacient je v neustálé lékařské péči. Pozorování je u lékaře při pravidelných kontrolách",
+    "source": "Klinické vyšetření- pacient je v neustálé lékařské péči. Pozorování je u lékaře při pravidelných kontrolách",
+    "category": "Ošetřovatelství",
+    "options": [
+      "pacient je v neustálé lékařské péči. Pozorování je u lékaře při pravidelných kontrolách",
+      "všechny údaje o zdravotním stavu pacienta od narození do současnosti",
+      "pravidelný lékařský dohled nad pacientem trpícím určitou chorobou",
+      "to soubor duševních příznaku které se objevuje u dítěte následkem dlouhodobého pobytu v nemocnici."
+    ]
+  },
+  {
+    "id": 92,
+    "question": "Klínické příznaky intraabdominálního traumatu jsou",
+    "answer": "bolest břicha, silné napětí a bolest při dotyku břišní stěny, poloha s ohnutými koleny, dýchání hrudníku",
+    "source": "Klínické příznaky intraabdominálního traumatu jsou- bolest břicha, silné napětí a bolest při dotyku břišní stěny, poloha s ohnutými koleny, dýchání hrudníku",
+    "category": "Dýchání",
+    "options": [
+      "bolest břicha, silné napětí a bolest při dotyku břišní stěny, poloha s ohnutými koleny, dýchání hrudníku",
+      "nedostatečný příjem bílkovin, malnutrice, DM,anemie, obezita, hypertenze, nedostatek vit. C , hypoxie, hypotermie, kouření.",
+      "hypoventilace, porucha difuze, porucha perfuze, zkrat",
+      "hypotenze, tachykardie, bledá a zpocené kůže, rychlé dýchání, úzkost oběti."
+    ]
+  },
+  {
+    "id": 93,
+    "question": "Klinický obraz je",
+    "answer": "typický komplexní příznaky onemocnění",
+    "source": "Klinický obraz je- typický komplexní příznaky onemocnění",
+    "category": "Ostatní",
+    "options": [
+      "typický komplexní příznaky onemocnění",
+      "chirurgické otevřeni dutiny břicha",
+      "příznaky, projevy nemocí",
+      "aplikace do kloubu."
+    ]
+  },
+  {
+    "id": 94,
+    "question": "Klinické příznaky šoku jsou",
+    "answer": "blanšírování kůže a spojivky, vlhká studená kůže, tachykartie, snížená tvorba moči, enterální venozní tlak",
+    "source": "Klinické příznaky šoku jsou- blanšírování kůže a spojivky, vlhká studená kůže, tachykartie, snížená tvorba moči, enterální venozní tlak",
+    "category": "Urologie",
+    "options": [
+      "blanšírování kůže a spojivky, vlhká studená kůže, tachykartie, snížená tvorba moči, enterální venozní tlak",
+      "bolest a řezavý pocit při močení.",
+      "množství moči za 24 hod vytvořena ledvinamy (1500ml )",
+      "méně než 20ml/h a méně než 500ml/24h (obě odpovědi jsou správné)"
+    ]
+  },
+  {
+    "id": 95,
+    "question": "Konservativní lečba akutní pankreatitidy zahrnuje",
+    "answer": "zastavení příjmů potravin pér os, speciálni výživu, dostatečně hrazení tekutin, ATB a lečbu bolesti",
+    "source": "Konservativní lečba akutní pankreatitidy zahrnuje- zastavení příjmů potravin pér os, speciálni výživu, dostatečně hrazení tekutin, ATB a lečbu bolesti",
+    "category": "Gastroenterologie",
+    "options": [
+      "zastavení příjmů potravin pér os, speciálni výživu, dostatečně hrazení tekutin, ATB a lečbu bolesti",
+      "vyvod, vyustění něčeho někam.",
+      "genetické dyspozice, stress, dlouhodobá špatná strava, kouření, Helikobakter pylori.",
+      "racionální."
+    ]
+  },
+  {
+    "id": 96,
+    "question": "Kussmaulové dychaní",
+    "answer": "hluboké a zrychlené, diabetická koma.",
+    "source": "Kussmaulové dychaní- hluboké a zrychlené, diabetická koma.",
+    "category": "Diabetes",
+    "options": [
+      "hluboké a zrychlené, diabetická koma.",
+      "jednotlivé dechy se postupně prohlubuji a zároveň",
+      "nedýcha.",
+      "různé dechové vlny se nepravidelně střidaji s apnoickými pauzamy meningitidy, encefalitidy."
+    ]
+  },
+  {
+    "id": 97,
+    "question": "KPR poměr u jedného zachranaře",
+    "answer": "začit srdeční masaže 100 za min nepřestanne do te doby pokud dorazí pomoc.",
+    "source": "KPR poměr u jedného zachranaře- začit srdeční masaže 100 za min nepřestanne do te doby pokud dorazí pomoc.",
+    "category": "Kardiologie a KPR",
+    "options": [
+      "začit srdeční masaže 100 za min nepřestanne do te doby pokud dorazí pomoc.",
+      "k obnovení životních funkcí",
+      "zotavovací polohy na boku.",
+      "kdokoliv."
+    ]
+  },
+  {
+    "id": 98,
+    "question": "Laryngitis acuta se projevuje jako",
+    "answer": "štekavy kašel, inspirační stridor a dysfonie",
+    "source": "Laryngitis acuta se projevuje jako- štekavy kašel, inspirační stridor a dysfonie",
+    "category": "Ostatní",
+    "options": [
+      "štekavy kašel, inspirační stridor a dysfonie",
+      "kožní onemocnění, zánět mazových žlaz.",
+      "žádanka k danemu výšetření, štítek, zkumavka, odběr.",
+      "stimulace smysloveho vnimani."
+    ]
+  },
+  {
+    "id": 99,
+    "question": "Laparotomie",
+    "answer": "chirurgické otevřeni dutiny břicha",
+    "source": "Laparotomie- chirurgické otevřeni dutiny břicha",
+    "category": "Ostatní",
+    "options": [
+      "chirurgické otevřeni dutiny břicha",
+      "endoskopická vyšetřovací a léčebna metoda, která spočívá v zavedení fibroskopu do duodena, prohlednutí dané oblasť a v nástřiku kontrastní látky do žlučovodu a vývodu slinivky břišní s následným rentgenovým snímkováním.",
+      "endoskopické vyšetřeni dutiny břišní",
+      "perkutánní endoskopická gastrostomie"
+    ]
+  },
+  {
+    "id": 100,
+    "question": "Laparoskopie",
+    "answer": "endoskopické vyšetřeni dutiny břišní",
+    "source": "Laparoskopie- endoskopické vyšetřeni dutiny břišní",
+    "category": "Ostatní",
+    "options": [
+      "endoskopické vyšetřeni dutiny břišní",
+      "endoskopická vyšetřovací a léčebna metoda, která spočívá v zavedení fibroskopu do duodena, prohlednutí dané oblasť a v nástřiku kontrastní látky do žlučovodu a vývodu slinivky břišní s následným rentgenovým snímkováním.",
+      "chirurgické otevřeni dutiny břicha",
+      "perkutánní endoskopická gastrostomie"
+    ]
+  },
+  {
+    "id": 101,
+    "question": "Leková forma gelové mazaní se označuje lat.",
+    "answer": "liniment.",
+    "source": "Leková forma gelové mazaní se označuje lat.- liniment.",
+    "category": "Ostatní",
+    "options": [
+      "liniment.",
+      "intradermálně.",
+      "žadna z odpovědí naní správná.",
+      "37,8 – 41°C."
+    ]
+  },
+  {
+    "id": 102,
+    "question": "Lečivem se rozumí",
+    "answer": "léčivá látka, její směs nebo léčivý přípravek, který se použivá k aplikaci",
+    "source": "Lečivem se rozumí- léčivá látka, její směs nebo léčivý přípravek, který se použivá k aplikaci",
+    "category": "Ostatní",
+    "options": [
+      "léčivá látka, její směs nebo léčivý přípravek, který se použivá k aplikaci",
+      "to systemové zhoubné nádorové onemocněni mízních uzlin.",
+      "bolest nalačno nebo 2 hodiny po jídle.",
+      "paroxyzmální hypertenze, nervozita, nespavost, Besedová choroba- velké oči."
+    ]
+  },
+  {
+    "id": 103,
+    "question": "Léčba akutní pankreatitidy",
+    "answer": "důležite níc per.os., analgetika, kortikoidy, simptomatická léčba.",
+    "source": "Léčba akutní pankreatitidy- důležite níc per.os., analgetika, kortikoidy, simptomatická léčba.",
+    "category": "Gastroenterologie",
+    "options": [
+      "důležite níc per.os., analgetika, kortikoidy, simptomatická léčba.",
+      "racionální.",
+      "i.v., intraosealně, vyjimečně subkutálně, rektálně podávání léků nebo výživy.",
+      "bolest břicha, nevolnost, zvraceni, nechutenství, hubnuti, pocit plnosti, paleni žáhy, zápach z úst"
+    ]
+  },
+  {
+    "id": 104,
+    "question": "Lipodystrofie",
+    "answer": "ztrata tukové tkaně po opakováci aplikaci inzulinu do stejného místa.",
+    "source": "Lipodystrofie- ztrata tukové tkaně po opakováci aplikaci inzulinu do stejného místa.",
+    "category": "Diabetes",
+    "options": [
+      "ztrata tukové tkaně po opakováci aplikaci inzulinu do stejného místa.",
+      "inzulin a glucagon.",
+      "změnami na DK související s onemocněním “diabetes mellitus”",
+      "diabetes mellitus II typu"
+    ]
+  },
+  {
+    "id": 105,
+    "question": "Malý glikemický profil",
+    "answer": "4x denně, 2x po týdnu, nebo 3x denně.",
+    "source": "Malý glikemický profil- 4x denně, 2x po týdnu, nebo 3x denně.",
+    "category": "Ostatní",
+    "options": [
+      "4x denně, 2x po týdnu, nebo 3x denně.",
+      "žádanka k danemu výšetření, štítek, zkumavka, odběr.",
+      "zanětlivé onemocnění cev, okrajových časti končetin.",
+      "neodkladná, akutní, nezbytná a plánovaná"
+    ]
+  },
+  {
+    "id": 106,
+    "question": "Manipuláce s biologickym materiálem",
+    "answer": "žádanka k danemu výšetření, štítek, zkumavka, odběr.",
+    "source": "Manipuláce s biologickym materiálem- žádanka k danemu výšetření, štítek, zkumavka, odběr.",
+    "category": "Ostatní",
+    "options": [
+      "žádanka k danemu výšetření, štítek, zkumavka, odběr.",
+      "endoskopické vyšetřeni dutiny břišní",
+      "tekutina v dutině hrudní",
+      "žadna z odpovědí naní správná."
+    ]
+  },
+  {
+    "id": 107,
+    "question": "Mezi kvalitativní poruchy vědomí patří",
+    "answer": "delirium",
+    "source": "Mezi kvalitativní poruchy vědomí patří-delirium",
+    "category": "Neurologie",
+    "options": [
+      "delirium",
+      "bledost, poceni, chvění (třes), úzkost, slabost, hlad, naueza a zvraceni, tachykardie, zmatenost, změny osobnosti, závratě, bolesti hlavy, křeče až koma, neschopnost soustředit se, opřený pohled.",
+      "zánět mozkových blan, nebo plen.",
+      "při bezvědomi (na boku)."
+    ]
+  },
+  {
+    "id": 108,
+    "question": "Mezi nasycené tuky Nepatří",
+    "answer": "sojový olej",
+    "source": "Mezi nasycené tuky Nepatří- sojový olej",
+    "category": "Ostatní",
+    "options": [
+      "sojový olej",
+      "snížují hladinu LDL cholesterolu a tím I riziko výskytu kardiovaskulárního onemocnění",
+      "pochazí z rostlinových zdroju a rybich oleju (omega 3).",
+      "kokosový."
+    ]
+  },
+  {
+    "id": 109,
+    "question": "Míoza znamená",
+    "answer": "zůžené zornice",
+    "source": "Míoza znamená- zůžené zornice",
+    "category": "Oční",
+    "options": [
+      "zůžené zornice",
+      "rozšíření velikost zornic",
+      "stejná velikost zornic",
+      "různá velikost zornic."
+    ]
+  },
+  {
+    "id": 110,
+    "question": "Mezí metody edukace patří",
+    "answer": "výklad, rozhovor, beseda, přednáška, diskuse ( obě odpovědi jsou správné)",
+    "source": "Mezí metody edukace patří- výklad, rozhovor, beseda, přednáška, diskuse ( obě odpovědi jsou správné)",
+    "category": "Ošetřovatelství",
+    "options": [
+      "výklad, rozhovor, beseda, přednáška, diskuse ( obě odpovědi jsou správné)",
+      "to je obečné označení po dalši vicedenní lečbu u lůžkovem zdravotnickem zařízení, které nelze léčit ambulantně.",
+      "imitace, manipulace, zpřecnovaní, koordinace, automatizace",
+      "mimika, žesty."
+    ]
+  },
+  {
+    "id": 111,
+    "question": "Mezí metody edukace nepatří",
+    "answer": "skupinová forma edukace.",
+    "source": "Mezí metody edukace nepatří- skupinová forma edukace.",
+    "category": "Ošetřovatelství",
+    "options": [
+      "skupinová forma edukace.",
+      "mimika, žesty.",
+      "to pedagogický ošetřovatelský process který má nabidnout mentalně postiženym jedincum podněty pro vyvoj jejich osobnosti v jednoduche podobě.",
+      "pacient je v neustálé lékařské péči. Pozorování je u lékaře při pravidelných kontrolách"
+    ]
+  },
+  {
+    "id": 112,
+    "question": "Mezi kvantitativní poruchy vědomí patři",
+    "answer": "somnolence, sopor, koma",
+    "source": "Mezi kvantitativní poruchy vědomí patři- somnolence, sopor, koma",
+    "category": "Neurologie",
+    "options": [
+      "somnolence, sopor, koma",
+      "zvýšení nitroočního tlaku, zužení zorného pole, změna optického nervu se zrůsta i jejich frekvence ( bezvědomí nebo ve spanku)",
+      "zotavovací polohy na boku.",
+      "při bezvědomi (na boku)."
+    ]
+  },
+  {
+    "id": 113,
+    "question": "Mezi klinický příznaky trombocytopenie patři",
+    "answer": "krvácení do kůže (petechie, purpure, sufuze), krvácení ze sliznic, epistaxe (krvacení z nosu), krvácení z dásni, neúměrné krvácení po běžných poraněních a během chirurgických výkonu",
+    "source": "Mezi klinický příznaky trombocytopenie patři- krvácení do kůže (petechie, purpure, sufuze), krvácení ze sliznic, epistaxe (krvacení z nosu), krvácení z dásni, neúměrné krvácení po běžných poraněních a během chirurgických výkonu",
+    "category": "Krev a šok",
+    "options": [
+      "krvácení do kůže (petechie, purpure, sufuze), krvácení ze sliznic, epistaxe (krvacení z nosu), krvácení z dásni, neúměrné krvácení po běžných poraněních a během chirurgických výkonu",
+      "nedostatek železa v krve.",
+      "onemocnění krve, konkretně červených krvinek.",
+      "krvácení, purpura, ekchimozy nebo hematomy, uvětšená a bolestivá jatra a slezina, bolest hlavy, hypotenze a tachykardie."
+    ]
+  },
+  {
+    "id": 114,
+    "question": "Mezi klinický příznaky trombocytopenie patři",
+    "answer": "krvácení, purpura, ekchimozy nebo hematomy, uvětšená a bolestivá jatra a slezina, bolest hlavy, hypotenze a tachykardie.",
+    "source": "Mezi klinický příznaky trombocytopenie patři- krvácení, purpura, ekchimozy nebo hematomy, uvětšená a bolestivá jatra a slezina, bolest hlavy, hypotenze a tachykardie.",
+    "category": "Krev a šok",
+    "options": [
+      "krvácení, purpura, ekchimozy nebo hematomy, uvětšená a bolestivá jatra a slezina, bolest hlavy, hypotenze a tachykardie.",
+      "rozpad červených krvinek.",
+      "krvácení do kůže (petechie, purpure, sufuze), krvácení ze sliznic, epistaxe (krvacení z nosu), krvácení z dásni, neúměrné krvácení po běžných poraněních a během chirurgických výkonu",
+      "onemocnění krve, konkretně červených krvinek."
+    ]
+  },
+  {
+    "id": 115,
+    "question": "Midriáza označuje stav velikosti zornic",
+    "answer": "rozšíření velikost zornic",
+    "source": "Midriáza označuje stav velikosti zornic- rozšíření velikost zornic",
+    "category": "Oční",
+    "options": [
+      "rozšíření velikost zornic",
+      "zůžené zornice",
+      "různá velikost zornic.",
+      "stejná velikost zornic"
+    ]
+  },
+  {
+    "id": 116,
+    "question": "Meningealní symptomy jsou",
+    "answer": "úzkost, trizm (obličejový křeče), zvýšená reflexní vzrušivost, ztuhé svaly (pacient nemůže naklonit hlavu k hrudníku), žaludek se zatáhl dovnitř",
+    "source": "Meningealní symptomy jsou- úzkost, trizm (obličejový křeče), zvýšená reflexní vzrušivost, ztuhé svaly (pacient nemůže naklonit hlavu k hrudníku), žaludek se zatáhl dovnitř",
+    "category": "Ošetřovatelství",
+    "options": [
+      "úzkost, trizm (obličejový křeče), zvýšená reflexní vzrušivost, ztuhé svaly (pacient nemůže naklonit hlavu k hrudníku), žaludek se zatáhl dovnitř",
+      "zánět mozkových blan, nebo plen.",
+      "neklíd, obličejové křeče, zvýšená reflexní draždivost, opozice šíje (pacient nepřeloží hlavu na sternum), natažené břicho.",
+      "meningeální syndrome, světloplachost, teplová unava, tachykardie, bolest hlavy, zvracení, příznaky nitrolební hypertenze, poruchy vědomí."
+    ]
+  },
+  {
+    "id": 117,
+    "question": "Meningealní příznaky jsou",
+    "answer": "neklíd, obličejové křeče, zvýšená reflexní draždivost, opozice šíje (pacient nepřeloží hlavu na sternum), natažené břicho.",
+    "source": "Meningealní příznaky jsou- neklíd, obličejové křeče, zvýšená reflexní draždivost, opozice šíje (pacient nepřeloží hlavu na sternum), natažené břicho.",
+    "category": "Ošetřovatelství",
+    "options": [
+      "neklíd, obličejové křeče, zvýšená reflexní draždivost, opozice šíje (pacient nepřeloží hlavu na sternum), natažené břicho.",
+      "úzkost, trizm (obličejový křeče), zvýšená reflexní vzrušivost, ztuhé svaly (pacient nemůže naklonit hlavu k hrudníku), žaludek se zatáhl dovnitř",
+      "meningeální syndrome, světloplachost, teplová unava, tachykardie, bolest hlavy, zvracení, příznaky nitrolební hypertenze, poruchy vědomí.",
+      "vysoká horečka, ztuhlost těla, bolest hlavy, zvrácení, procitlivost na světlo, může dojít až ke komatu, krční křeče."
+    ]
+  },
+  {
+    "id": 118,
+    "question": "Meningitida",
+    "answer": "zánět mozkových blan, nebo plen.",
+    "source": "Meningitida- zánět mozkových blan, nebo plen.",
+    "category": "Neurologie",
+    "options": [
+      "zánět mozkových blan, nebo plen.",
+      "vysoká horečka, ztuhlost těla, bolest hlavy, zvrácení, procitlivost na světlo, může dojít až ke komatu, krční křeče.",
+      "úzkost, trizm (obličejový křeče), zvýšená reflexní vzrušivost, ztuhé svaly (pacient nemůže naklonit hlavu k hrudníku), žaludek se zatáhl dovnitř",
+      "meningeální syndrome, světloplachost, teplová unava, tachykardie, bolest hlavy, zvracení, příznaky nitrolební hypertenze, poruchy vědomí."
+    ]
+  },
+  {
+    "id": 119,
+    "question": "Mezi hormony slinivky břišný patří",
+    "answer": "inzulin a glucagon.",
+    "source": "Mezi hormony slinivky břišný patří- inzulin a glucagon.",
+    "category": "Diabetes",
+    "options": [
+      "inzulin a glucagon.",
+      "změnami na DK související s onemocněním “diabetes mellitus”",
+      "3,5-6,5 mmol",
+      "ztrata tukové tkaně po opakováci aplikaci inzulinu do stejného místa."
+    ]
+  },
+  {
+    "id": 120,
+    "question": "Nenasycené tuky",
+    "answer": "snížují hladinu LDL cholesterolu a tím I riziko výskytu kardiovaskulárního onemocnění",
+    "source": "Nenasycené tuky- snížují hladinu LDL cholesterolu a tím I riziko výskytu kardiovaskulárního onemocnění",
+    "category": "Ostatní",
+    "options": [
+      "snížují hladinu LDL cholesterolu a tím I riziko výskytu kardiovaskulárního onemocnění",
+      "kokosový.",
+      "pochazí z rostlinových zdroju a rybich oleju (omega 3).",
+      "sojový olej"
+    ]
+  },
+  {
+    "id": 121,
+    "question": "Nemoc",
+    "answer": "stav organizmu vznikající pusobení na zevních či vnitřních okolnosti. Dochazí k porucham funkce a struktury orgánu vedoucím ke vzníku příznaků nemoci a dalším důsledkum.",
+    "source": "Nemoc- stav organizmu vznikající pusobení na zevních či vnitřních okolnosti. Dochazí k porucham funkce a struktury orgánu vedoucím ke vzníku příznaků nemoci a dalším důsledkum.",
+    "category": "Ostatní",
+    "options": [
+      "stav organizmu vznikající pusobení na zevních či vnitřních okolnosti. Dochazí k porucham funkce a struktury orgánu vedoucím ke vzníku příznaků nemoci a dalším důsledkum.",
+      "snížují hladinu LDL cholesterolu a tím I riziko výskytu kardiovaskulárního onemocnění",
+      "hluboký prožitky a smutným životem, je pro něj obtížný",
+      "4x denně, 2x po týdnu, nebo 3x denně."
+    ]
+  },
+  {
+    "id": 122,
+    "question": "Nenasycené tuky",
+    "answer": "pochazí z rostlinových zdroju a rybich oleju (omega 3).",
+    "source": "Nenasycené tuky- pochazí z rostlinových zdroju a rybich oleju (omega 3).",
+    "category": "Ostatní",
+    "options": [
+      "pochazí z rostlinových zdroju a rybich oleju (omega 3).",
+      "sojový olej",
+      "snížují hladinu LDL cholesterolu a tím I riziko výskytu kardiovaskulárního onemocnění",
+      "kokosový."
+    ]
+  },
+  {
+    "id": 123,
+    "question": "Nejčastější příznaky vzniku žaludečného vředu jsou",
+    "answer": "genetické dyspozice, stress, dlouhodobá špatná strava, kouření, Helikobakter pylori.",
+    "source": "Nejčastější příznaky vzniku žaludečného vředu jsou genetické dyspozice, stress, dlouhodobá špatná strava, kouření, Helikobakter pylori.",
+    "category": "Gastroenterologie",
+    "options": [
+      "genetické dyspozice, stress, dlouhodobá špatná strava, kouření, Helikobakter pylori.",
+      "důležite níc per.os., analgetika, kortikoidy, simptomatická léčba.",
+      "porucha střevní motility a defikáce.",
+      "žlučniková."
+    ]
+  },
+  {
+    "id": 124,
+    "question": "Norma BMI je",
+    "answer": "18,6 – 24,9",
+    "source": "Norma BMI je 18,6 – 24,9",
+    "category": "Ostatní",
+    "options": [
+      "18,6 – 24,9",
+      "60-90 tepů/min.",
+      "7,35-7,45.",
+      "3,5-6,5 mmol"
+    ]
+  },
+  {
+    "id": 125,
+    "question": "Normální PH v krví",
+    "answer": "7,35-7,45.",
+    "source": "Normální PH v krví- 7,35-7,45.",
+    "category": "Ostatní",
+    "options": [
+      "7,35-7,45.",
+      "18,6 – 24,9",
+      "60-90 tepů/min.",
+      "3,5-6,5 mmol"
+    ]
+  },
+  {
+    "id": 126,
+    "question": "Nozokomialní nákazy vznikají",
+    "answer": "v příme souvislosti s pobytem ve zdravotnickém zařízení",
+    "source": "Nozokomialní nákazy vznikají- v příme souvislosti s pobytem ve zdravotnickém zařízení",
+    "category": "Infekce",
+    "options": [
+      "v příme souvislosti s pobytem ve zdravotnickém zařízení",
+      "syndrom ziskáneho selhání imunity- je soubor přiznaku a infekci, který je nasledkem poškození imunitního systemu člověka virem HIV.",
+      "proces který zabezpečuje umrcení všech životoschopních mikroorganizmů včetně spor.",
+      "akutní průjmová bakteriální nemoc způsobena netiphoidnymy bakteriemi rodu Salmonella."
+    ]
+  },
+  {
+    "id": 127,
+    "question": "Neposkytnutí první pomoci je klasifikovaná jako",
+    "answer": "trestní čin",
+    "source": "Neposkytnutí první pomoci je klasifikovaná jako trestní čin",
+    "category": "Ostatní",
+    "options": [
+      "trestní čin",
+      "sojový olej",
+      "zužení.",
+      "1%"
+    ]
+  },
+  {
+    "id": 128,
+    "question": "Neverbální komunikace je souhrn mimoslovních sdělení",
+    "answer": "mimika, žesty.",
+    "source": "Neverbální komunikace je souhrn mimoslovních sdělení- mimika, žesty.",
+    "category": "Ošetřovatelství",
+    "options": [
+      "mimika, žesty.",
+      "psané slova",
+      "úzkost, trizm (obličejový křeče), zvýšená reflexní vzrušivost, ztuhé svaly (pacient nemůže naklonit hlavu k hrudníku), žaludek se zatáhl dovnitř",
+      "vyuka nemocného k samostatnější péči o vlastní onemocnění při které přebirá větší část odpovědností za vlastní zdravi na sebe. Edukace známena poučení."
+    ]
+  },
+  {
+    "id": 129,
+    "question": "Nykturie",
+    "answer": "noční močení.",
+    "source": "Nykturie- noční močení.",
+    "category": "Urologie",
+    "options": [
+      "noční močení.",
+      "samovolné odkapavání moče.",
+      "únik močí při zvýšeném intraabdominálnim tlaku",
+      "částe nucení na moč."
+    ]
+  },
+  {
+    "id": 130,
+    "question": "Obstipace (zacpa) je",
+    "answer": "porucha střevní motility a defikáce.",
+    "source": "Obstipace (zacpa) je porucha střevní motility a defikáce.",
+    "category": "Gastroenterologie",
+    "options": [
+      "porucha střevní motility a defikáce.",
+      "žlučniková.",
+      "racionální.",
+      "nizkobilkovinna."
+    ]
+  },
+  {
+    "id": 131,
+    "question": "Oligurie je vyloučené množství moče",
+    "answer": "méně než 20ml/h a méně než 500ml/24h (obě odpovědi jsou správné)",
+    "source": "Oligurie je vyloučené množství moče- méně než 20ml/h a méně než 500ml/24h (obě odpovědi jsou správné)",
+    "category": "Urologie",
+    "options": [
+      "méně než 20ml/h a méně než 500ml/24h (obě odpovědi jsou správné)",
+      "únik močí při zvýšeném intraabdominálnim tlaku",
+      "bílkovina v moči.",
+      "zadržení moči v močovem měchýře při nemožnosti močení."
+    ]
+  },
+  {
+    "id": 132,
+    "question": "Obor podiatrie se zabývá",
+    "answer": "změnami na DK související s onemocněním “diabetes mellitus”",
+    "source": "Obor podiatrie se zabývá- změnami na DK související s onemocněním “diabetes mellitus”",
+    "category": "Diabetes",
+    "options": [
+      "změnami na DK související s onemocněním “diabetes mellitus”",
+      "3,5-6,5 mmol",
+      "hluboké a zrychlené, diabetická koma.",
+      "endoskopická vyšetřovací a léčebna metoda, která spočívá v zavedení fibroskopu do duodena, prohlednutí dané oblasť a v nástřiku kontrastní látky do žlučovodu a vývodu slinivky břišní s následným rentgenovým snímkováním."
+    ]
+  },
+  {
+    "id": 133,
+    "question": "Ortopnoická poloha",
+    "answer": "kterou pacient zaujimá především z důvodu ulehčení dychaní při onemocnění plic.",
+    "source": "Ortopnoická poloha- kterou pacient zaujimá především z důvodu ulehčení dychaní při onemocnění plic.",
+    "category": "Dýchání",
+    "options": [
+      "kterou pacient zaujimá především z důvodu ulehčení dychaní při onemocnění plic.",
+      "jedna DK je pokrčená, druha natažená. Při popaleninách, traumach, pleuritidě.",
+      "nemocný sedí ze spuštěnymi DK které jsou opřeny, HK se opirá o stolek nebo o lůžko",
+      "poloha na zadech, dolní končetiny mírně pokrčené, na poloze horních končetin nezaleží"
+    ]
+  },
+  {
+    "id": 134,
+    "question": "Ortopnoická poloha",
+    "answer": "nemocný sedí ze spuštěnymi DK které jsou opřeny, HK se opirá o stolek nebo o lůžko",
+    "source": "Ortopnoická poloha- nemocný sedí ze spuštěnymi DK které jsou opřeny, HK se opirá o stolek nebo o lůžko",
+    "category": "Polohy",
+    "options": [
+      "nemocný sedí ze spuštěnymi DK které jsou opřeny, HK se opirá o stolek nebo o lůžko",
+      "kterou pacient zaujimá především z důvodu ulehčení dychaní při onemocnění plic.",
+      "poloha na zadech, dolní končetiny mírně pokrčené, na poloze horních končetin nezaleží",
+      "při bezvědomi (na boku)."
+    ]
+  },
+  {
+    "id": 135,
+    "question": "Oš. Proces, kolik faz, jaká je 4",
+    "answer": "je 5 faz, 4- realizace oš. planu.",
+    "source": "Oš. Proces, kolik faz, jaká je 4- je 5 faz, 4- realizace oš. planu.",
+    "category": "Ostatní",
+    "options": [
+      "je 5 faz, 4- realizace oš. planu.",
+      "štekavy kašel, inspirační stridor a dysfonie",
+      "typický komplexní příznaky onemocnění",
+      "Vsemirní Zdravotní Organizace."
+    ]
+  },
+  {
+    "id": 136,
+    "question": "Proč se mění dezrostoky",
+    "answer": "hrozí rezistence.",
+    "source": "Proč se mění dezrostoky- hrozí rezistence.",
+    "category": "Ostatní",
+    "options": [
+      "hrozí rezistence.",
+      "intradermálně.",
+      "liniment.",
+      "utočne jednání z cilem ublížit."
+    ]
+  },
+  {
+    "id": 137,
+    "question": "Povinnost poskytnout PP",
+    "answer": "kdokoliv.",
+    "source": "Povinnost poskytnout PP- kdokoliv.",
+    "category": "Ostatní",
+    "options": [
+      "kdokoliv.",
+      "začit srdeční masaže 100 za min nepřestanne do te doby pokud dorazí pomoc.",
+      "k obnovení životních funkcí",
+      "zotavovací polohy na boku."
+    ]
+  },
+  {
+    "id": 138,
+    "question": "Parenterální výživa",
+    "answer": "i.v., intraosealně, vyjimečně subkutálně, rektálně podávání léků nebo výživy.",
+    "source": "Parenterální výživa- i.v., intraosealně, vyjimečně subkutálně, rektálně podávání léků nebo výživy.",
+    "category": "Gastroenterologie",
+    "options": [
+      "i.v., intraosealně, vyjimečně subkutálně, rektálně podávání léků nebo výživy.",
+      "chronické zánetlivé nespecifické onemocnění střevní sliznice omezující na tlusté střevo.",
+      "vyvod, vyustění něčeho někam.",
+      "genetické dyspozice, stress, dlouhodobá špatná strava, kouření, Helikobakter pylori."
+    ]
+  },
+  {
+    "id": 139,
+    "question": "Polakisurie",
+    "answer": "částe nucení na moč.",
+    "source": "Polakisurie- částe nucení na moč.",
+    "category": "Urologie",
+    "options": [
+      "částe nucení na moč.",
+      "částe močení, větší množství moče (2-3 l a vice).",
+      "meně než 100 ml za 24 hodiny.",
+      "bolest a řezavý pocit při močení."
+    ]
+  },
+  {
+    "id": 140,
+    "question": "Poloha na boku",
+    "answer": "jedna DK je pokrčená, druha natažená. Při popaleninách, traumach, pleuritidě.",
+    "source": "Poloha na boku-jedna DK je pokrčená, druha natažená. Při popaleninách, traumach, pleuritidě.",
+    "category": "Polohy",
+    "options": [
+      "jedna DK je pokrčená, druha natažená. Při popaleninách, traumach, pleuritidě.",
+      "poloha na zadech, dolní končetiny mírně pokrčené, na poloze horních končetin nezaleží",
+      "nemocný sedí ze spuštěnymi DK které jsou opřeny, HK se opirá o stolek nebo o lůžko",
+      "poloha s hlavou a hrudníkem niže než dolní končetiny, která se využivá u nemocných při stratách krve nebo po operacích na male pánví."
+    ]
+  },
+  {
+    "id": 141,
+    "question": "Polyurie",
+    "answer": "částe močení, větší množství moče (2-3 l a vice).",
+    "source": "Polyurie- částe močení, větší množství moče (2-3 l a vice).",
+    "category": "Urologie",
+    "options": [
+      "částe močení, větší množství moče (2-3 l a vice).",
+      "únik močí při zvýšeném intraabdominálnim tlaku",
+      "noční močení.",
+      "množství moči za 24 hod vytvořena ledvinamy (1500ml )"
+    ]
+  },
+  {
+    "id": 142,
+    "question": "Poloha při vyšetření břícha je",
+    "answer": "poloha na zadech, dolní končetiny mírně pokrčené, na poloze horních končetin nezaleží",
+    "source": "Poloha při vyšetření břícha je poloha na zadech, dolní končetiny mírně pokrčené, na poloze horních končetin nezaleží",
+    "category": "Polohy",
+    "options": [
+      "poloha na zadech, dolní končetiny mírně pokrčené, na poloze horních končetin nezaleží",
+      "poloha s hlavou a hrudníkem niže než dolní končetiny, která se využivá u nemocných při stratách krve nebo po operacích na male pánví.",
+      "při bezvědomi (na boku).",
+      "kterou pacient zaujimá především z důvodu ulehčení dychaní při onemocnění plic."
+    ]
+  },
+  {
+    "id": 143,
+    "question": "Pneumonie je",
+    "answer": "akutní onemocnění charakterizované zánetlivymi změnami v plicní tkání",
+    "source": "Pneumonie je akutní onemocnění charakterizované zánetlivymi změnami v plicní tkání",
+    "category": "Dýchání",
+    "options": [
+      "akutní onemocnění charakterizované zánetlivymi změnami v plicní tkání",
+      "to chronická obstrukční plicní nemoc. Onemocnění DDC.",
+      "hypotenze, tachykardie, bledá a zpocené kůže, rychlé dýchání, úzkost oběti.",
+      "zpomalené dýchaní, meně než 10 za min."
+    ]
+  },
+  {
+    "id": 144,
+    "question": "Psychomotorické cíle edukace zahrnují",
+    "answer": "imitace, manipulace, zpřecnovaní, koordinace, automatizace",
+    "source": "Psychomotorické cíle edukace zahrnují- imitace, manipulace, zpřecnovaní, koordinace, automatizace",
+    "category": "Ošetřovatelství",
+    "options": [
+      "imitace, manipulace, zpřecnovaní, koordinace, automatizace",
+      "to pedagogický ošetřovatelský process který má nabidnout mentalně postiženym jedincum podněty pro vyvoj jejich osobnosti v jednoduche podobě.",
+      "pacient je v neustálé lékařské péči. Pozorování je u lékaře při pravidelných kontrolách",
+      "skupinová forma edukace."
+    ]
+  },
+  {
+    "id": 145,
+    "question": "Popáleniny na dlané jedné ruky mají procentuální rozsah",
+    "answer": "1%",
+    "source": "Popáleniny na dlané jedné ruky mají procentuální rozsah -1%",
+    "category": "Ostatní",
+    "options": [
+      "1%",
+      "přejedání.",
+      "žadna z odpovědí naní správná.",
+      "trestní čin"
+    ]
+  },
+  {
+    "id": 146,
+    "question": "Popáleniny na jedné ruce mají procentuální rozsah",
+    "answer": "9%",
+    "source": "Popáleniny na jedné ruce mají procentuální rozsah -9%",
+    "category": "Ostatní",
+    "options": [
+      "9%",
+      "trestní čin",
+      "otok celého těla.",
+      "do kloubů"
+    ]
+  },
+  {
+    "id": 147,
+    "question": "Poučeni pacienta před sbíraní moči za 24 hodin zni",
+    "answer": "v 6 hodin se vymočit do WC a poté močit do označené nádoby, sběr moči se ukončí v 6 ráno následujícího dne",
+    "source": "Poučeni pacienta před sbíraní moči za 24 hodin zni- v 6 hodin se vymočit do WC a poté močit do označené nádoby, sběr moči se ukončí v 6 ráno následujícího dne",
+    "category": "Urologie",
+    "options": [
+      "v 6 hodin se vymočit do WC a poté močit do označené nádoby, sběr moči se ukončí v 6 ráno následujícího dne",
+      "obtížite a bolestlive močení.",
+      "polyurie, polydipsie( nadměrná žízeň), nauzea, zvraceni, slabost, pach moče jablkama, Kussmaulovo dýcháni, pach z úst acetonu.",
+      "bílkovina v moči."
+    ]
+  },
+  {
+    "id": 148,
+    "question": "Příznaky akutního infarktu myokardu (AMI) NENí",
+    "answer": "plnění žíly",
+    "source": "Příznaky akutního infarktu myokardu (AMI) NENí - plnění žíly",
+    "category": "Kardiologie a KPR",
+    "options": [
+      "plnění žíly",
+      "30:2 u dospělého a 15: 2 u děti.",
+      "5 vdechu",
+      "60-90 tepů/min."
+    ]
+  },
+  {
+    "id": 149,
+    "question": "Příznaky anafilaktického šoku",
+    "answer": "svědivá výražka, otok v krku, nizký krevní tlak, kopřivka, zvrácení.",
+    "source": "Příznaky anafilaktického šoku- svědivá výražka, otok v krku, nizký krevní tlak, kopřivka, zvrácení.",
+    "category": "Krev a šok",
+    "options": [
+      "svědivá výražka, otok v krku, nizký krevní tlak, kopřivka, zvrácení.",
+      "hypotenze, tachykardie, bledá a zpocené kůže, rychlé dýchání, úzkost oběti.",
+      "hemoragický.",
+      "akutní alergický stav, který provází bronchospasmus, pokles krevního tlaku, oběhové selhání a distribuční šok."
+    ]
+  },
+  {
+    "id": 150,
+    "question": "Příznaky neuroinfekci jsou",
+    "answer": "meningeální syndrome, světloplachost, teplová unava, tachykardie, bolest hlavy, zvracení, příznaky nitrolební hypertenze, poruchy vědomí.",
+    "source": "Příznaky neuroinfekci jsou- meningeální syndrome, světloplachost, teplová unava, tachykardie, bolest hlavy, zvracení, příznaky nitrolební hypertenze, poruchy vědomí.",
+    "category": "Kardiologie a KPR",
+    "options": [
+      "meningeální syndrome, světloplachost, teplová unava, tachykardie, bolest hlavy, zvracení, příznaky nitrolební hypertenze, poruchy vědomí.",
+      "vysoká horečka, ztuhlost těla, bolest hlavy, zvrácení, procitlivost na světlo, může dojít až ke komatu, krční křeče.",
+      "úzkost, trizm (obličejový křeče), zvýšená reflexní vzrušivost, ztuhé svaly (pacient nemůže naklonit hlavu k hrudníku), žaludek se zatáhl dovnitř",
+      "neklíd, obličejové křeče, zvýšená reflexní draždivost, opozice šíje (pacient nepřeloží hlavu na sternum), natažené břicho."
+    ]
+  },
+  {
+    "id": 151,
+    "question": "Příznaky onemocnění srdce",
+    "answer": "dušnost, cyanóza, hypo a hyperventiláce, bolest na hrudi, dušnost může být namáhava.",
+    "source": "Příznaky onemocnění srdce- dušnost, cyanóza, hypo a hyperventiláce, bolest na hrudi, dušnost může být namáhava.",
+    "category": "Kardiologie a KPR",
+    "options": [
+      "dušnost, cyanóza, hypo a hyperventiláce, bolest na hrudi, dušnost může být namáhava.",
+      "onemocnění které vzniká při nedostatečnem prokrvení srdečního svalu.",
+      "60-90 tepů/min.",
+      "ateroskleroza"
+    ]
+  },
+  {
+    "id": 152,
+    "question": "Příznaky trombocytopurpury",
+    "answer": "znižený krevní tlak.",
+    "source": "Příznaky trombocytopurpury- znižený krevní tlak.",
+    "category": "Krev a šok",
+    "options": [
+      "znižený krevní tlak.",
+      "zánět a srazenina v krvi.",
+      "dodávat kyslík do tkání",
+      "nedostatek železa v krve."
+    ]
+  },
+  {
+    "id": 153,
+    "question": "Přitomnost krve ve stolici",
+    "answer": "melena",
+    "source": "Přitomnost krve ve stolici- melena",
+    "category": "Ostatní",
+    "options": [
+      "melena",
+      "zjištění glomerulární filtrace",
+      "trestní čin",
+      "hrozí rezistence."
+    ]
+  },
+  {
+    "id": 154,
+    "question": "Příznaky ztraty krve jsou",
+    "answer": "hypotenze, tachykardie, bledost, pocení, rychlé dychaní,časté zivání, neklid, zadychavání.",
+    "source": "Příznaky ztraty krve jsou- hypotenze, tachykardie, bledost, pocení, rychlé dychaní,časté zivání, neklid, zadychavání.",
+    "category": "Ostatní",
+    "options": [
+      "hypotenze, tachykardie, bledost, pocení, rychlé dychaní,časté zivání, neklid, zadychavání.",
+      "je 5 faz, 4- realizace oš. planu.",
+      "poruchu acidobazické rovnováhy, při které stoupa pH nad fyziologickou mez",
+      "hluboký prožitky a smutným životem, je pro něj obtížný"
+    ]
+  },
+  {
+    "id": 155,
+    "question": "Příznaky duodenálního vředu",
+    "answer": "bolest nalačno nebo 2 hodiny po jídle.",
+    "source": "Příznaky duodenálního vředu- bolest nalačno nebo 2 hodiny po jídle.",
+    "category": "Ostatní",
+    "options": [
+      "bolest nalačno nebo 2 hodiny po jídle.",
+      "neodkladná, akutní, nezbytná a plánovaná",
+      "znovu vspláchnutí příznaku původního onemocnění",
+      "chirurgické otevřeni dutiny břicha"
+    ]
+  },
+  {
+    "id": 156,
+    "question": "Příznaky meningiálního syndromu",
+    "answer": "vysoká horečka, ztuhlost těla, bolest hlavy, zvrácení, procitlivost na světlo, může dojít až ke komatu, krční křeče.",
+    "source": "Příznaky meningiálního syndromu-vysoká horečka, ztuhlost těla, bolest hlavy, zvrácení, procitlivost na světlo, může dojít až ke komatu, krční křeče.",
+    "category": "Neurologie",
+    "options": [
+      "vysoká horečka, ztuhlost těla, bolest hlavy, zvrácení, procitlivost na světlo, může dojít až ke komatu, krční křeče.",
+      "meningeální syndrome, světloplachost, teplová unava, tachykardie, bolest hlavy, zvracení, příznaky nitrolební hypertenze, poruchy vědomí.",
+      "zánět mozkových blan, nebo plen.",
+      "neklíd, obličejové křeče, zvýšená reflexní draždivost, opozice šíje (pacient nepřeloží hlavu na sternum), natažené břicho."
+    ]
+  },
+  {
+    "id": 157,
+    "question": "Petechiae",
+    "answer": "bod krvácení( tečkové krvácení).Malé, drobné krevní výronky.",
+    "source": "Petechiae- bod krvácení( tečkové krvácení).Malé, drobné krevní výronky.",
+    "category": "Krev a šok",
+    "options": [
+      "bod krvácení( tečkové krvácení).Malé, drobné krevní výronky.",
+      "dodávat kyslík do tkání",
+      "krvácení, purpura, ekchimozy nebo hematomy, uvětšená a bolestivá jatra a slezina, bolest hlavy, hypotenze a tachykardie.",
+      "zánět a srazenina v krvi."
+    ]
+  },
+  {
+    "id": 158,
+    "question": "Prostředky pro intraartikulární aplikaci léků",
+    "answer": "do kloubů",
+    "source": "Prostředky pro intraartikulární aplikaci léků- do kloubů",
+    "category": "Ostatní",
+    "options": [
+      "do kloubů",
+      "aplikace do kloubu.",
+      "otok celého těla.",
+      "psychický stav."
+    ]
+  },
+  {
+    "id": 159,
+    "question": "Proteinurie",
+    "answer": "bílkovina v moči.",
+    "source": "Proteinurie- bílkovina v moči.",
+    "category": "Urologie",
+    "options": [
+      "bílkovina v moči.",
+      "meně než 100 ml za 24 hodiny.",
+      "částe močení, větší množství moče (2-3 l a vice).",
+      "únik močí při zvýšeném intraabdominálnim tlaku"
+    ]
+  },
+  {
+    "id": 160,
+    "question": "Paradoxní išurie",
+    "answer": "samovolné odkapavání moče.",
+    "source": "Paradoxní išurie- samovolné odkapavání moče.",
+    "category": "Urologie",
+    "options": [
+      "samovolné odkapavání moče.",
+      "noční močení.",
+      "množství moči za 24 hod vytvořena ledvinamy (1500ml )",
+      "přítomnost krve v moči ."
+    ]
+  },
+  {
+    "id": 161,
+    "question": "Přičiny ICHS",
+    "answer": "ateroskleroza",
+    "source": "Přičiny ICHS- ateroskleroza",
+    "category": "Kardiologie a KPR",
+    "options": [
+      "ateroskleroza",
+      "5 vdechu",
+      "střidaní horečky a normální teploty.",
+      "dušnost, cyanóza, hypo a hyperventiláce, bolest na hrudi, dušnost může být namáhava."
+    ]
+  },
+  {
+    "id": 162,
+    "question": "Při prací s biologickým materálem (krev, hnis, emetické masy, sliny a t.d)",
+    "answer": "je nutné řádně používat ochranné prostředky, pří prácí s materiálem nejíst, nekouřit, manípulovat s materíálem aby nedošlo k poranění",
+    "source": "Při prací s biologickým materálem (krev, hnis, emetické masy, sliny a t.d) - je nutné řádně používat ochranné prostředky, pří prácí s materiálem nejíst, nekouřit, manípulovat s materíálem aby nedošlo k poranění",
+    "category": "Krev a šok",
+    "options": [
+      "je nutné řádně používat ochranné prostředky, pří prácí s materiálem nejíst, nekouřit, manípulovat s materíálem aby nedošlo k poranění",
+      "zánět a srazenina v krvi.",
+      "krvácení do kůže (petechie, purpure, sufuze), krvácení ze sliznic, epistaxe (krvacení z nosu), krvácení z dásni, neúměrné krvácení po běžných poraněních a během chirurgických výkonu",
+      "nedostatek železa v krve."
+    ]
+  },
+  {
+    "id": 163,
+    "question": "Pacient má právo",
+    "answer": "na úctu, důstojné zacházení, na ohleduplnoct a respektování soukromí",
+    "source": "Pacient má právo- na úctu, důstojné zacházení, na ohleduplnoct a respektování soukromí",
+    "category": "Ošetřovatelství",
+    "options": [
+      "na úctu, důstojné zacházení, na ohleduplnoct a respektování soukromí",
+      "to je obečné označení po dalši vicedenní lečbu u lůžkovem zdravotnickem zařízení, které nelze léčit ambulantně.",
+      "pacient je v neustálé lékařské péči. Pozorování je u lékaře při pravidelných kontrolách",
+      "imitace, manipulace, zpřecnovaní, koordinace, automatizace"
+    ]
+  },
+  {
+    "id": 164,
+    "question": "PEG znamená",
+    "answer": "perkutánní endoskopická gastrostomie",
+    "source": "PEG znamená- perkutánní endoskopická gastrostomie",
+    "category": "Gastroenterologie",
+    "options": [
+      "perkutánní endoskopická gastrostomie",
+      "chirurgické otevřeni dutiny břicha",
+      "endoskopická vyšetřovací a léčebna metoda, která spočívá v zavedení fibroskopu do duodena, prohlednutí dané oblasť a v nástřiku kontrastní látky do žlučovodu a vývodu slinivky břišní s následným rentgenovým snímkováním.",
+      "endoskopické vyšetřeni dutiny břišní"
+    ]
+  },
+  {
+    "id": 165,
+    "question": "Postižení glomerulu při onemocnění diabetes mellitus se nazývá",
+    "answer": "diabetická nefropatie",
+    "source": "Postižení glomerulu při onemocnění diabetes mellitus se nazývá diabetická nefropatie",
+    "category": "Diabetes",
+    "options": [
+      "diabetická nefropatie",
+      "všechny změny na dolnich končetinách, které vznikají v důsledku onemocnění “diabetes mellitus”",
+      "1typu.",
+      "změnami na DK související s onemocněním “diabetes mellitus”"
+    ]
+  },
+  {
+    "id": 166,
+    "question": "Postiženého v bezvědomí se zachovanými životními funkcemi uložíme do",
+    "answer": "zotavovací polohy na boku.",
+    "source": "Postiženého v bezvědomí se zachovanými životními funkcemi uložíme do zotavovací polohy na boku.",
+    "category": "Neurologie",
+    "options": [
+      "zotavovací polohy na boku.",
+      "kdokoliv.",
+      "začit srdeční masaže 100 za min nepřestanne do te doby pokud dorazí pomoc.",
+      "5 vdechu"
+    ]
+  },
+  {
+    "id": 167,
+    "question": "Rizikové faktory kolorektalniho karcinomu je",
+    "answer": "věk, mužské pohlaví, životní styl, dědíčnost, nespecificke střevní zanety",
+    "source": "Rizikové faktory kolorektalniho karcinomu je věk, mužské pohlaví, životní styl, dědíčnost, nespecificke střevní zanety",
+    "category": "Gastroenterologie",
+    "options": [
+      "věk, mužské pohlaví, životní styl, dědíčnost, nespecificke střevní zanety",
+      "podání farmaceutických roztoku do trávicího traktu.",
+      "důležite níc per.os., analgetika, kortikoidy, simptomatická léčba.",
+      "genetické dyspozice, stress, dlouhodobá špatná strava, kouření, Helikobakter pylori."
+    ]
+  },
+  {
+    "id": 168,
+    "question": "Relaps (recidiv) znamená",
+    "answer": "znovu vspláchnutí příznaku původního onemocnění",
+    "source": "Relaps (recidiv) znamená znovu vspláchnutí příznaku původního onemocnění",
+    "category": "Ostatní",
+    "options": [
+      "znovu vspláchnutí příznaku původního onemocnění",
+      "bolest nalačno nebo 2 hodiny po jídle.",
+      "chirurgické otevřeni dutiny břicha",
+      "hluboký prožitky a smutným životem, je pro něj obtížný"
+    ]
+  },
+  {
+    "id": 169,
+    "question": "Salmoneloza",
+    "answer": "akutní průjmová bakteriální nemoc způsobena netiphoidnymy bakteriemi rodu Salmonella.",
+    "source": "Salmoneloza- akutní průjmová bakteriální nemoc způsobena netiphoidnymy bakteriemi rodu Salmonella.",
+    "category": "Infekce",
+    "options": [
+      "akutní průjmová bakteriální nemoc způsobena netiphoidnymy bakteriemi rodu Salmonella.",
+      "proces který zabezpečuje umrcení všech životoschopních mikroorganizmů včetně spor.",
+      "syndrom ziskáneho selhání imunity- je soubor přiznaku a infekci, který je nasledkem poškození imunitního systemu člověka virem HIV.",
+      "v příme souvislosti s pobytem ve zdravotnickém zařízení"
+    ]
+  },
+  {
+    "id": 170,
+    "question": "Stenoza",
+    "answer": "zužení.",
+    "source": "Stenoza- zužení.",
+    "category": "Ostatní",
+    "options": [
+      "zužení.",
+      "otok celého těla.",
+      "kokosový.",
+      "18,6 – 24,9"
+    ]
+  },
+  {
+    "id": 171,
+    "question": "Stomie",
+    "answer": "vyvod, vyustění něčeho někam.",
+    "source": "Stomie- vyvod, vyustění něčeho někam.",
+    "category": "Gastroenterologie",
+    "options": [
+      "vyvod, vyustění něčeho někam.",
+      "genetické dyspozice, stress, dlouhodobá špatná strava, kouření, Helikobakter pylori.",
+      "i.v., intraosealně, vyjimečně subkutálně, rektálně podávání léků nebo výživy.",
+      "žlučniková."
+    ]
+  },
+  {
+    "id": 172,
+    "question": "Sindrom DIC je",
+    "answer": "(Diseminovaná Intravaskularni Koagulace)- přidružená porucha koagulačního systému komplikujcí základní závažné onemocnění",
+    "source": "Sindrom DIC je (Diseminovaná Intravaskularni Koagulace)- přidružená porucha koagulačního systému komplikujcí základní závažné onemocnění",
+    "category": "Krev a šok",
+    "options": [
+      "(Diseminovaná Intravaskularni Koagulace)- přidružená porucha koagulačního systému komplikujcí základní závažné onemocnění",
+      "hemoragický.",
+      "dodávat kyslík do tkání",
+      "zánět a srazenina v krvi."
+    ]
+  },
+  {
+    "id": 173,
+    "question": "Sideropenická anemie",
+    "answer": "nedostatek železa v krve.",
+    "source": "Sideropenická anemie- nedostatek železa v krve.",
+    "category": "Krev a šok",
+    "options": [
+      "nedostatek železa v krve.",
+      "rozpad červených krvinek.",
+      "krvácení, purpura, ekchimozy nebo hematomy, uvětšená a bolestivá jatra a slezina, bolest hlavy, hypotenze a tachykardie.",
+      "krvácení do kůže (petechie, purpure, sufuze), krvácení ze sliznic, epistaxe (krvacení z nosu), krvácení z dásni, neúměrné krvácení po běžných poraněních a během chirurgických výkonu"
+    ]
+  },
+  {
+    "id": 174,
+    "question": "SHOPN je",
+    "answer": "to chronická obstrukční plicní nemoc. Onemocnění DDC.",
+    "source": "SHOPN je to chronická obstrukční plicní nemoc. Onemocnění DDC.",
+    "category": "Dýchání",
+    "options": [
+      "to chronická obstrukční plicní nemoc. Onemocnění DDC.",
+      "zpomalené dýchaní, meně než 10 za min.",
+      "zrychlené dýchání.",
+      "prodloužene míše"
+    ]
+  },
+  {
+    "id": 175,
+    "question": "Sterilizáce",
+    "answer": "proces který zabezpečuje umrcení všech životoschopních mikroorganizmů včetně spor.",
+    "source": "Sterilizáce- proces který zabezpečuje umrcení všech životoschopních mikroorganizmů včetně spor.",
+    "category": "Infekce",
+    "options": [
+      "proces který zabezpečuje umrcení všech životoschopních mikroorganizmů včetně spor.",
+      "akutní průjmová bakteriální nemoc způsobena netiphoidnymy bakteriemi rodu Salmonella.",
+      "v příme souvislosti s pobytem ve zdravotnickém zařízení",
+      "syndrom ziskáneho selhání imunity- je soubor přiznaku a infekci, který je nasledkem poškození imunitního systemu člověka virem HIV."
+    ]
+  },
+  {
+    "id": 176,
+    "question": "Srdeční masaž",
+    "answer": "30:2 u dospělého a 15: 2 u děti.",
+    "source": "Srdeční masaž 30:2 u dospělého a 15: 2 u děti.",
+    "category": "Kardiologie a KPR",
+    "options": [
+      "30:2 u dospělého a 15: 2 u děti.",
+      "kdokoliv.",
+      "zotavovací polohy na boku.",
+      "začit srdeční masaže 100 za min nepřestanne do te doby pokud dorazí pomoc."
+    ]
+  },
+  {
+    "id": 177,
+    "question": "Strangurie",
+    "answer": "bolest a řezavý pocit při močení.",
+    "source": "Strangurie- bolest a řezavý pocit při močení.",
+    "category": "Urologie",
+    "options": [
+      "bolest a řezavý pocit při močení.",
+      "přítomnost krve v moči .",
+      "noční močení.",
+      "samovolné odkapavání moče."
+    ]
+  },
+  {
+    "id": 178,
+    "question": "Stressová inkintinence znamená",
+    "answer": "únik močí při zvýšeném intraabdominálnim tlaku",
+    "source": "Stressová inkintinence znamená -únik močí při zvýšeném intraabdominálnim tlaku",
+    "category": "Urologie",
+    "options": [
+      "únik močí při zvýšeném intraabdominálnim tlaku",
+      "částe močení, větší množství moče (2-3 l a vice).",
+      "přítomnost krve v moči .",
+      "bílkovina v moči."
+    ]
+  },
+  {
+    "id": 179,
+    "question": "Stadia umírání podle Kubler-Rossobe deli",
+    "answer": "popírání a izolace, hněv/zlost, smlouváni, depresse, akceptace (smíření)",
+    "source": "Stadia umírání podle Kubler-Rossobe deli - popírání a izolace, hněv/zlost, smlouváni, depresse, akceptace (smíření)",
+    "category": "Ostatní",
+    "options": [
+      "popírání a izolace, hněv/zlost, smlouváni, depresse, akceptace (smíření)",
+      "snížují hladinu LDL cholesterolu a tím I riziko výskytu kardiovaskulárního onemocnění",
+      "hypotenze, tachykardie, bledost, pocení, rychlé dychaní,časté zivání, neklid, zadychavání.",
+      "znovu vspláchnutí příznaku původního onemocnění"
+    ]
+  },
+  {
+    "id": 180,
+    "question": "Symptomy",
+    "answer": "příznaky, projevy nemocí",
+    "source": "Symptomy- příznaky, projevy nemocí",
+    "category": "Ostatní",
+    "options": [
+      "příznaky, projevy nemocí",
+      "utočne jednání z cilem ublížit.",
+      "prodloužená mícha.",
+      "hrozí rezistence."
+    ]
+  },
+  {
+    "id": 181,
+    "question": "Symptomy masivní ztráty krve",
+    "answer": "hypotenze, tachykardie, bledá a zpocené kůže, rychlé dýchání, úzkost oběti.",
+    "source": "Symptomy masivní ztráty krve - hypotenze, tachykardie, bledá a zpocené kůže, rychlé dýchání, úzkost oběti.",
+    "category": "Dýchání",
+    "options": [
+      "hypotenze, tachykardie, bledá a zpocené kůže, rychlé dýchání, úzkost oběti.",
+      "svědivá výražka, otok v krku, nizký krevní tlak, kopřivka, zvrácení.",
+      "hemoragický.",
+      "akutní alergický stav, který provází bronchospasmus, pokles krevního tlaku, oběhové selhání a distribuční šok."
+    ]
+  },
+  {
+    "id": 182,
+    "question": "Solutiones znamená dávkovou formu",
+    "answer": "roztok.",
+    "source": "Solutiones znamená dávkovou formu- roztok.",
+    "category": "Ostatní",
+    "options": [
+      "roztok.",
+      "37,8 – 41°C.",
+      "příznaky, projevy nemocí",
+      "trestní čin"
+    ]
+  },
+  {
+    "id": 183,
+    "question": "Srdeční enzymy při IM je",
+    "answer": "kreatinkinaza, kreatinkinaza MB, laktatdehydrogenaza.",
+    "source": "Srdeční enzymy při IM je kreatinkinaza, kreatinkinaza MB, laktatdehydrogenaza.",
+    "category": "Kardiologie a KPR",
+    "options": [
+      "kreatinkinaza, kreatinkinaza MB, laktatdehydrogenaza.",
+      "dušnost, cyanóza, hypo a hyperventiláce, bolest na hrudi, dušnost může být namáhava.",
+      "širokou veřejnost, která by za jeho pomoci měla být schopná poskytnout efektivnější kardiopulmonální resuscitaci (KPR)",
+      "onemocnění které vzniká při nedostatečnem prokrvení srdečního svalu."
+    ]
+  },
+  {
+    "id": 184,
+    "question": "Šok z velké ztraty krve",
+    "answer": "hemoragický.",
+    "source": "Šok z velké ztraty krve- hemoragický.",
+    "category": "Krev a šok",
+    "options": [
+      "hemoragický.",
+      "svědivá výražka, otok v krku, nizký krevní tlak, kopřivka, zvrácení.",
+      "hypotenze, tachykardie, bledá a zpocené kůže, rychlé dýchání, úzkost oběti.",
+      "akutní alergický stav, který provází bronchospasmus, pokles krevního tlaku, oběhové selhání a distribuční šok."
+    ]
+  },
+  {
+    "id": 185,
+    "question": "Transplantací krvetvorbných buněk které daruje sam sobě se označuje",
+    "answer": "autologni darce.",
+    "source": "Transplantací krvetvorbných buněk které daruje sam sobě se označuje- autologni darce.",
+    "category": "Ostatní",
+    "options": [
+      "autologni darce.",
+      "otok celého těla.",
+      "sojový olej",
+      "do kloubů"
+    ]
+  },
+  {
+    "id": 186,
+    "question": "Tromboflebitida",
+    "answer": "zánět a srazenina v krvi.",
+    "source": "Tromboflebitida- zánět a srazenina v krvi.",
+    "category": "Krev a šok",
+    "options": [
+      "zánět a srazenina v krvi.",
+      "malo cukru v krve.",
+      "krvácení do kůže (petechie, purpure, sufuze), krvácení ze sliznic, epistaxe (krvacení z nosu), krvácení z dásni, neúměrné krvácení po běžných poraněních a během chirurgických výkonu",
+      "onemocnění krve, konkretně červených krvinek."
+    ]
+  },
+  {
+    "id": 187,
+    "question": "Tepová frekvence dospělého",
+    "answer": "60-90 tepů/min.",
+    "source": "Tepová frekvence dospělého- 60-90 tepů/min.",
+    "category": "Kardiologie a KPR",
+    "options": [
+      "60-90 tepů/min.",
+      "7,35-7,45.",
+      "18,6 – 24,9",
+      "3,5-6,5 mmol"
+    ]
+  },
+  {
+    "id": 188,
+    "question": "Tepová frekvence",
+    "answer": "pulz.",
+    "source": "Tepová frekvence- pulz.",
+    "category": "Kardiologie a KPR",
+    "options": [
+      "pulz.",
+      "ateroskleroza",
+      "širokou veřejnost, která by za jeho pomoci měla být schopná poskytnout efektivnější kardiopulmonální resuscitaci (KPR)",
+      "začit srdeční masaže 100 za min nepřestanne do te doby pokud dorazí pomoc."
+    ]
+  },
+  {
+    "id": 189,
+    "question": "Tachypnoe znamená",
+    "answer": "zrychlené dýchání.",
+    "source": "Tachypnoe znamená- zrychlené dýchání.",
+    "category": "Dýchání",
+    "options": [
+      "zrychlené dýchání.",
+      "prohloubené dýcháni.",
+      "zpomalené dýchaní, meně než 10 za min.",
+      "nedýcha."
+    ]
+  },
+  {
+    "id": 190,
+    "question": "Temperament melancholika je charakterizovan",
+    "answer": "hluboký prožitky a smutným životem, je pro něj obtížný",
+    "source": "Temperament melancholika je charakterizovan- hluboký prožitky a smutným životem, je pro něj obtížný",
+    "category": "Ostatní",
+    "options": [
+      "hluboký prožitky a smutným životem, je pro něj obtížný",
+      "normální klidové dychaní (15-20 dechu).",
+      "žadna z odpovědí naní správná.",
+      "znovu vspláchnutí příznaku původního onemocnění"
+    ]
+  },
+  {
+    "id": 191,
+    "question": "Temperament",
+    "answer": "soustava psychologických vlastnosti které se projevuje zejména jak snadno vznikají emoce, jak jsou silně,jak živé se projevuje navenek, jak rychlé se střidají.",
+    "source": "Temperament- soustava psychologických vlastnosti které se projevuje zejména jak snadno vznikají emoce, jak jsou silně,jak živé se projevuje navenek, jak rychlé se střidají.",
+    "category": "Ostatní",
+    "options": [
+      "soustava psychologických vlastnosti které se projevuje zejména jak snadno vznikají emoce, jak jsou silně,jak živé se projevuje navenek, jak rychlé se střidají.",
+      "štekavy kašel, inspirační stridor a dysfonie",
+      "stav organizmu vznikající pusobení na zevních či vnitřních okolnosti. Dochazí k porucham funkce a struktury orgánu vedoucím ke vzníku příznaků nemoci a dalším důsledkum.",
+      "normální klidové dychaní (15-20 dechu)."
+    ]
+  },
+  {
+    "id": 192,
+    "question": "Trendelenburhová poloha je",
+    "answer": "poloha s hlavou a hrudníkem niže než dolní končetiny, která se využivá u nemocných při stratách krve nebo po operacích na male pánví.",
+    "source": "Trendelenburhová poloha je poloha s hlavou a hrudníkem niže než dolní končetiny, která se využivá u nemocných při stratách krve nebo po operacích na male pánví.",
+    "category": "Polohy",
+    "options": [
+      "poloha s hlavou a hrudníkem niže než dolní končetiny, která se využivá u nemocných při stratách krve nebo po operacích na male pánví.",
+      "nemocný sedí ze spuštěnymi DK které jsou opřeny, HK se opirá o stolek nebo o lůžko",
+      "jedna DK je pokrčená, druha natažená. Při popaleninách, traumach, pleuritidě.",
+      "poloha na zadech, dolní končetiny mírně pokrčené, na poloze horních končetin nezaleží"
+    ]
+  },
+  {
+    "id": 193,
+    "question": "Uepnoe",
+    "answer": "normální klidové dychaní (15-20 dechu).",
+    "source": "Uepnoe- normální klidové dychaní (15-20 dechu).",
+    "category": "Ostatní",
+    "options": [
+      "normální klidové dychaní (15-20 dechu).",
+      "hluboké a zrychlené, diabetická koma.",
+      "různé dechové vlny se nepravidelně střidaji s apnoickými pauzamy meningitidy, encefalitidy.",
+      "namáhové dýchaní pomoci slalstva."
+    ]
+  },
+  {
+    "id": 194,
+    "question": "Uložení chemoreceptoru dychaní",
+    "answer": "prodloužená mícha.",
+    "source": "Uložení chemoreceptoru dychaní- prodloužená mícha.",
+    "category": "Ostatní",
+    "options": [
+      "prodloužená mícha.",
+      "18,6 – 24,9",
+      "příznaky, projevy nemocí",
+      "sojový olej"
+    ]
+  },
+  {
+    "id": 195,
+    "question": "Ulcerozní kolititida",
+    "answer": "chronické zánetlivé nespecifické onemocnění střevní sliznice omezující na tlusté střevo.",
+    "source": "Ulcerozní kolititida- chronické zánetlivé nespecifické onemocnění střevní sliznice omezující na tlusté střevo.",
+    "category": "Gastroenterologie",
+    "options": [
+      "chronické zánetlivé nespecifické onemocnění střevní sliznice omezující na tlusté střevo.",
+      "důležite níc per.os., analgetika, kortikoidy, simptomatická léčba.",
+      "vyvod, vyustění něčeho někam.",
+      "racionální."
+    ]
+  },
+  {
+    "id": 196,
+    "question": "Urolithiáza znamená",
+    "answer": "tvorba a přítomnost konkrementu v dutém prostoru u ledviny nebo v odvodných močových cestach.",
+    "source": "Urolithiáza znamená- tvorba a přítomnost konkrementu v dutém prostoru u ledviny nebo v odvodných močových cestach.",
+    "category": "Urologie",
+    "options": [
+      "tvorba a přítomnost konkrementu v dutém prostoru u ledviny nebo v odvodných močových cestach.",
+      "bílkovina v moči.",
+      "únik močí při zvýšeném intraabdominálnim tlaku",
+      "v 6 hodin se vymočit do WC a poté močit do označené nádoby, sběr moči se ukončí v 6 ráno následujícího dne"
+    ]
+  },
+  {
+    "id": 197,
+    "question": "Verbální komunikace",
+    "answer": "komunikace pomoci slov prostřednictvim jazyka.",
+    "source": "Verbální komunikace- komunikace pomoci slov prostřednictvim jazyka.",
+    "category": "Ošetřovatelství",
+    "options": [
+      "komunikace pomoci slov prostřednictvim jazyka.",
+      "to je obečné označení po dalši vicedenní lečbu u lůžkovem zdravotnickem zařízení, které nelze léčit ambulantně.",
+      "na úctu, důstojné zacházení, na ohleduplnoct a respektování soukromí",
+      "pacient je v neustálé lékařské péči. Pozorování je u lékaře při pravidelných kontrolách"
+    ]
+  },
+  {
+    "id": 198,
+    "question": "Vnitrokůžně na latině",
+    "answer": "intradermálně.",
+    "source": "Vnitrokůžně na latině- intradermálně.",
+    "category": "Ostatní",
+    "options": [
+      "intradermálně.",
+      "žadna z odpovědí naní správná.",
+      "věda která zkoumá stárnutí.",
+      "psychický stav."
+    ]
+  },
+  {
+    "id": 199,
+    "question": "Výšetření onemocnění srdce",
+    "answer": "anamneza, fizikální výšetření, EKG, ECHO, RTG hrudniku, laboratoř, u pravostranního selháni angio-scyntigrafie.",
+    "source": "Výšetření onemocnění srdce- anamneza, fizikální výšetření, EKG, ECHO, RTG hrudniku, laboratoř, u pravostranního selháni angio-scyntigrafie.",
+    "category": "Kardiologie a KPR",
+    "options": [
+      "anamneza, fizikální výšetření, EKG, ECHO, RTG hrudniku, laboratoř, u pravostranního selháni angio-scyntigrafie.",
+      "začit srdeční masaže 100 za min nepřestanne do te doby pokud dorazí pomoc.",
+      "meningeální syndrome, světloplachost, teplová unava, tachykardie, bolest hlavy, zvracení, příznaky nitrolební hypertenze, poruchy vědomí.",
+      "onemocnění které vzniká při nedostatečnem prokrvení srdečního svalu."
+    ]
+  },
+  {
+    "id": 200,
+    "question": "WHO",
+    "answer": "Vsemirní Zdravotní Organizace.",
+    "source": "WHO- Vsemirní Zdravotní Organizace.",
+    "category": "Ostatní",
+    "options": [
+      "Vsemirní Zdravotní Organizace.",
+      "hrozí rezistence.",
+      "trestní čin",
+      "prodloužená mícha."
+    ]
+  },
+  {
+    "id": 201,
+    "question": "Zdravi",
+    "answer": "stav fizické, psychické, socialní a estetické pohody člověka.",
+    "source": "Zdravi- stav fizické, psychické, socialní a estetické pohody člověka.",
+    "category": "Ostatní",
+    "options": [
+      "stav fizické, psychické, socialní a estetické pohody člověka.",
+      "snížují hladinu LDL cholesterolu a tím I riziko výskytu kardiovaskulárního onemocnění",
+      "kožní onemocnění, zánět mazových žlaz.",
+      "typický komplexní příznaky onemocnění"
+    ]
+  },
+  {
+    "id": 202,
+    "question": "Zotavovaci poloha",
+    "answer": "při bezvědomi (na boku).",
+    "source": "Zotavovaci poloha- při bezvědomi (na boku).",
+    "category": "Neurologie",
+    "options": [
+      "při bezvědomi (na boku).",
+      "horní polovina těla zvednuta přibližně na 45° -90°",
+      "poloha s hlavou a hrudníkem niže než dolní končetiny, která se využivá u nemocných při stratách krve nebo po operacích na male pánví.",
+      "jedna DK je pokrčená, druha natažená. Při popaleninách, traumach, pleuritidě."
+    ]
+  }
+];
+
+const bank=window.QUESTION_BANK;let mode='learn',quiz=[],idx=0,correct=0,answered=false,mistakes=[],timerId=null,timeLeft=0;
+const $=id=>document.getElementById(id),shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},save=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+function updateHome(){let b=load('apro_v4_best',null);$('best').textContent=b?.percent!=null?b.percent+'%':'—';$('saved').textContent=load('apro_v4_errors',[]).length}updateHome();
+document.querySelectorAll('.modebtn').forEach(b=>b.onclick=()=>{document.querySelectorAll('.modebtn').forEach(x=>x.classList.remove('active'));b.classList.add('active');mode=b.dataset.mode});
+$('themeBtn').onclick=()=>{const dark=document.body.classList.toggle('dark');save('apro_v4_theme',dark?'dark':'light')};if(load('apro_v4_theme','light')==='dark')document.body.classList.add('dark');
+function prepare(arr){return arr.map(x=>({...x,options:shuffle(x.options)}))}
+$('startBtn').onclick=()=>{let pool=[...bank];if(mode==='mistakes'){const ids=load('apro_v4_errors',[]);pool=pool.filter(x=>ids.includes(x.id));if(!pool.length)return alert('Zatím nejsou uložené žádné chyby.')}let n=Math.min(+$('count').value,pool.length);quiz=prepare(shuffle(pool).slice(0,n));idx=0;correct=0;mistakes=[];timeLeft=+$('time').value*60;$('home').classList.add('hidden');$('result').classList.add('hidden');$('quiz').classList.remove('hidden');startTimer();render()};
+function startTimer(){clearInterval(timerId);if(!timeLeft){$('timer').textContent='';return}tick();timerId=setInterval(()=>{timeLeft--;tick();if(timeLeft<=0){clearInterval(timerId);finish()}},1000)}function tick(){$('timer').textContent=`${String(Math.floor(timeLeft/60)).padStart(2,'0')}:${String(timeLeft%60).padStart(2,'0')}`}
+function render(){answered=false;let q=quiz[idx];$('counter').textContent=`Otázka ${idx+1} / ${quiz.length}`;$('bar').style.width=`${idx/quiz.length*100}%`;$('question').textContent=q.question;$('feedback').textContent='';$('source').classList.add('hidden');$('nextBtn').disabled=true;$('options').innerHTML='';q.options.forEach(opt=>{let b=document.createElement('button');b.className='option';b.textContent=opt;b.onclick=()=>choose(b,opt);$('options').appendChild(b)})}
+function choose(btn,opt){if(answered)return;answered=true;let q=quiz[idx],ok=opt===q.answer;if(ok)correct++;else mistakes.push(q);document.querySelectorAll('.option').forEach(b=>{b.disabled=true;if(b.textContent===q.answer)b.classList.add('correct');else if(b===btn)b.classList.add('wrong')});let f=$('feedback');f.textContent=ok?'Správně!':'Nesprávně. Správná odpověď je označena zeleně.';f.className='feedback '+(ok?'ok':'bad');$('nextBtn').disabled=false}
+$('nextBtn').onclick=()=>idx<quiz.length-1?(idx++,render()):finish();$('quitBtn').onclick=()=>confirm('Ukončit test?')&&finish();
+function finish(){clearInterval(timerId);if(!quiz.length)return;$('quiz').classList.add('hidden');$('result').classList.remove('hidden');let pct=Math.round(correct/quiz.length*100);$('score').textContent=`${correct}/${quiz.length}`;$('percent').textContent=pct+'%';$('wrong').textContent=mistakes.length;$('grade').textContent=pct>=80?'Výborně':pct>=60?'Dobře':'Procvičit';let old=load('apro_v4_errors',[]),wrongIds=new Set(mistakes.map(x=>x.id)),answeredIds=new Set(quiz.map(x=>x.id));let ids=old.filter(id=>!answeredIds.has(id)||wrongIds.has(id));for(const id of wrongIds)if(!ids.includes(id))ids.push(id);save('apro_v4_errors',ids);let best=load('apro_v4_best',null);if(!best||pct>best.percent)save('apro_v4_best',{percent:pct,date:new Date().toISOString()});$('review').innerHTML=mistakes.length?'<h3>Chybné odpovědi</h3>'+mistakes.map(x=>`<div class="reviewitem"><b>${esc(x.question)}</b><br><span class="ok">${esc(x.answer)}</span></div>`).join(''):'<p class="ok"><b>Bez chyb.</b></p>';updateHome()}
+const esc=s=>s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));$('againBtn').onclick=()=>location.reload();$('retryBtn').onclick=()=>{if(!mistakes.length)return alert('V tomto testu nebyly chyby.');quiz=prepare(shuffle(mistakes));idx=0;correct=0;mistakes=[];$('result').classList.add('hidden');$('quiz').classList.remove('hidden');render()};if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(rs=>Promise.all(rs.map(r=>r.unregister())))}if('caches' in window){caches.keys().then(keys=>Promise.all(keys.map(k=>caches.delete(k))))}</script></body></html>

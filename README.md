@@ -1,0 +1,1 @@
+VERZE 4. Nahraj všechny soubory do kořene GitHub repozitáře. Aplikace je v jediném index.html, takže se nemůže smíchat se starým data.js nebo app.js. Staré soubory data.js, app.js, style.css a sw.js smaž.
