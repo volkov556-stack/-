@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2949c7">
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-192.png">
+<title>Aprobační trenažér</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+<header><div><div class="eyebrow">MEDICÍNA</div><h1>Aprobační trenažér</h1></div><button id="themeBtn" class="iconbtn" aria-label="Motiv">◐</button></header>
+
+<section id="home" class="panel">
+  <div class="hero"><b>202 otázek</b><span>Testy podle tvé databáze</span></div>
+  <div class="grid">
+    <label>Počet otázek<select id="count"><option>20</option><option>50</option><option>100</option><option value="202">Všech 202</option></select></label>
+    <label>Čas<select id="time"><option value="0">Bez časovače</option><option value="20">20 minut</option><option value="40">40 minut</option><option value="60">60 minut</option></select></label>
+  </div>
+  <label>Téma<select id="topic"><option value="all">Všechna témata</option></select></label>
+  <div class="mode">
+    <button class="modebtn active" data-mode="exam">Zkouška<small>Výsledek na konci</small></button>
+    <button class="modebtn" data-mode="learn">Učení<small>Odpověď ihned</small></button>
+    <button class="modebtn" data-mode="mistakes">Chyby<small>Opakování chyb</small></button>
+  </div>
+  <button id="startBtn" class="primary">Začít</button>
+  <div class="statsline"><span>Nejlepší výsledek: <b id="best">—</b></span><span>Uložené chyby: <b id="saved">0</b></span></div>
+</section>
+
+<section id="quiz" class="hidden">
+  <div class="quiztop"><span id="counter"></span><span id="timer"></span></div>
+  <div class="progress"><i id="bar"></i></div>
+  <div class="panel questionbox">
+    <div class="tag" id="tag"></div><h2 id="question"></h2><div id="options" class="options"></div>
+    <div id="feedback" class="feedback"></div><div id="source" class="source hidden"></div>
+    <div class="actions"><button id="quitBtn" class="secondary">Ukončit</button><button id="nextBtn" class="primary" disabled>Další</button></div>
+  </div>
+</section>
+
+<section id="result" class="panel hidden">
+  <h2>Výsledek</h2><div id="grade" class="grade"></div>
+  <div class="resultgrid"><div><b id="score"></b><span>správně</span></div><div><b id="percent"></b><span>úspěšnost</span></div><div><b id="wrong"></b><span>chyb</span></div></div>
+  <div id="review"></div>
+  <div class="actions"><button id="againBtn" class="primary">Nový test</button><button id="retryBtn" class="secondary">Opakovat chyby</button></div>
+</section>
+</div>
+<script src="data.js"></script><script src="app.js"></script>
+</body></html>
